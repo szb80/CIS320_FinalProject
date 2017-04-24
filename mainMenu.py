@@ -2,80 +2,150 @@
 # Hugo & Seth
 # SB 4/20
 
+# Imports
+import InventoryModule, Inventory, sqlite3
 
-MAX_MODULES = 3  # Global static for total modules in program
+# Initialize variables
 
-menuChoice = 0  # initialize
+# Global static for total modules available in program
+# Adjust the MAX_MODULES variable when adding additional modules to program.
+MAX_MODULES = 3
 
-
-def getMenuModules(selection):
-    menuModules = {
-        '1': "Inventory",
-        '2': "Personnel",
-        '3': "POS"
-    }[selection]
-    return menuModules
+menuChoice = 0  # initialize out of scope before prompting user for input
 
 
-# tested okay
+# validates if the menu choice was within the appropriate range
 def validateMenuChoice(num):
     return num in range(1, MAX_MODULES + 1)
 
 
-################################################################################
-# BEGIN INVENTORY MODULE
-################################################################################
-def goInventoryMenu():
-    imenuChoice = 0
-
-    while not validateMenuChoice(imenuChoice):
-        # print the menu
-        print("INVENTORY MENU", "-" * 20)
-        print("1) Check Inventory")
-        print("2) Modify Inventory")
-
-        # take user menu choice
-        menuChoice = int(input())  # CATCH EXCEPTION #########################################
-
-        # call sub modules
-        if menuChoice == 1:
-            print()
-        elif menuChoice == 2:
-            print()
-        else:
-            menuChoice == 0  # reset to 0 and start over
-
-
-
-################################################################################
-# END INVENTORY MODULE
-################################################################################
-
-
-def mainMenu():
+# displays the main menu
+# accepts the managerFlag boolean to determine menu display
+def mainMenu(managerFlag):
     # main menu loop, display menu until valid selection is made
     while not validateMenuChoice(menuChoice):
         # print the menu
         print("MAIN MENU", "-" * 20)
         print("1) Inventory")
-        print("2) Personnel")
-        print("3) POS")
+        if managerFlag:  # only for the bosses!
+            print("2) Personnel")
+            print("3) POS")
+        else:  # sorry, just an employee
+            print("3) POS")
 
         # take the user menu choice
-        menuChoice = int(input())  # CATCH EXCEPTION ++++++++++++++++++++++++++++++++++++++
+        # validate the input as an int and catch exceptions
+        try:
+            menuChoice = int(input())
+        except ValueError:
+            print("Incorrect selection, try again!")
 
-        # call module menus
-        if menuChoice == 1:
-            goInventoryMenu()
-        elif menuChoice == 2:
+
+    # call module menus
+    if menuChoice == 1:
+        InventoryModule.displayInventoryMenu()
+    elif menuChoice == 2:
+        if managerFlag:
+            # displayPersonnelMenu()
             print()
-            # goPersonnelMenu()
-        elif menuChoice == 3:
-            print()
-            # goPOSMenu()
         else:
-            menuChoice == 0  # invalid menu choice, default to 0
+            print("You do not have the appropriate permissions.")
+    elif menuChoice == 3:
+        print()
+        # displayPOSMenu()
+    else:
+        menuChoice == 0  # invalid menu choice, default to 0
 
 
-mainMenu()
+# main(), 'nuff said
+def main():
 
+    # userLogin()
+    # setManagerFlag()
+
+    managerFlag = True
+
+    #mainMenu(managerFlag)
+
+
+
+
+
+    ############################################################################
+    # SQLITE TESTING
+    ############################################################################
+
+    flour = Inventory.Inventory()
+    flour.setItemNumber(100)
+    flour.setItemName("Flour")
+    flour.setItemDesc("Whole wheat flour cracked")
+    flour.setStockCount(99)
+
+
+
+    conn = sqlite3.connect('inventory.db')
+    table_name = 'inventory_db'
+    c = conn.cursor()
+
+
+
+
+
+    # create new record -------------------------------------------
+    # WORKING!
+    try:
+        c.execute("INSERT INTO inventory_db VALUES(?, ?, ?, ?)"
+                  , (flour.getItemNumber()
+                     , flour.getItemName()
+                     , flour.getItemDesc()
+                     , flour.getStockCount()
+                     )
+                  )
+    except sqlite3.IntegrityError:
+        print("ERROR: ID already exists!")
+
+    # ------------------------------------------------------------
+
+
+    # search for a matching SQL record: --------------------------
+    c.execute(
+        '''SELECT * FROM inventory_db WHERE itemNumber=?'''
+        , (flour.getItemNumber(),)
+    )
+    record = c.fetchone()
+
+    # print(record)  # must translate into Invenotry object
+
+    # ------------------------------------------------------------
+
+
+    # update an existing record ----------------------------------
+    # WORKING
+    try:
+        c.execute(
+            "UPDATE inventory_db SET itemName=?, itemDesc=?, stockCount=? WHERE itemNumber=?"
+            , (flour.getItemName()
+               , flour.getItemDesc()
+               , flour.getStockCount()
+               , flour.getItemNumber()
+               )
+            )
+
+    except sqlite3.IntegrityError:
+        print("ERROR: ID doesn't exist!")
+
+    # ------------------------------------------------------------
+
+
+
+
+
+    conn.commit()
+    conn.close()
+
+
+
+
+
+
+main()
