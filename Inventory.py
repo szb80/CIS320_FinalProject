@@ -4,23 +4,30 @@
 
 # Inventory class
 
-import Validate, sqlite3
-
+import Validate
 
 class Inventory:
 
+    # set global sizes
+    MIN_ITEM_NUMBER_SIZE = 1
+    MAX_ITEM_NUMBER_SIZE = 9999
+
+
     # initialization def
     def __init__(self):
-        self.__itemNumber = 000
+        self.__itemNumber = 0
         self.__itemName = "_BLANK NAME"
         self.__itemDesc = "_BLANK SHORT DESCRIPTION"
         self.__stockCount = 0
 
 
+    # setters
     def setItemNumber(self, itemNum):
         if Validate.validateInt(itemNum):
-            self.__itemNumber = itemNum
-            return True
+            if itemNum >= Inventory.MIN_ITEM_NUMBER_SIZE \
+                and itemNum <= Inventory.MAX_ITEM_NUMBER_SIZE:
+                    self.__itemNumber = itemNum
+                    return True
         return False
 
 
@@ -45,6 +52,7 @@ class Inventory:
         return False
 
 
+    # getters
     def getItemNumber(self):
         return self.__itemNumber
 
@@ -61,25 +69,27 @@ class Inventory:
         return self.__stockCount
 
 
-    def displayInventory(self):
+    def getMIN_ITEM_NUMBER_SIZE(self):
+        return self.MIN_ITEM_NUMBER_SIZE
+
+
+    def getMAX_ITEM_NUMBER_SIZE(self):
+        return self.MAX_ITEM_NUMBER_SIZE
+
+
+    # default print() override
+    def __str__(self):
         print(self.__itemNumber
               , self.__itemName
               , self.__itemDesc
               , self.__stockCount)
 
+
+
+
+
+
+    # NOT USED IN SPEC #########################################################
     def displayInventory(self, itemNum):  ######################################
         self.searchInventory(itemNum)  # search for item number and
         self.displayInventory(itemNum)  # display for returned inventory item
-
-
-    def searchInventory(self, searchStr):
-        # SEARCHES INVENTORY DB FOR NAME MATCHING searchStr  ###################
-        # returns matching inventory instance ##################################
-        return True
-
-
-    def searchInventory(self, itemNum):
-        # SEARCHES INVENTORY DB FOR ITEM NUM MATCHING ARGUMENT #################
-        # returns matching inventory instance ##################################
-        return True
-

@@ -43,7 +43,7 @@ def mainMenu(managerFlag):
 
     # call module menus
     if menuChoice == 1:
-        InventoryModule.displayInventoryMenu()
+        InventoryModule.displayInventoryMenuHome()
     elif menuChoice == 2:
         if managerFlag:
             # displayPersonnelMenu()
@@ -65,7 +65,7 @@ def main():
 
     managerFlag = True
 
-    #mainMenu(managerFlag)
+    mainMenu(managerFlag)
 
 
 
@@ -76,10 +76,10 @@ def main():
     ############################################################################
 
     flour = Inventory.Inventory()
-    flour.setItemNumber(100)
-    flour.setItemName("Flour")
-    flour.setItemDesc("Whole wheat flour cracked")
-    flour.setStockCount(99)
+    flour.setItemNumber(101)
+    flour.setItemName("Sugar")
+    flour.setItemDesc("White sugar")
+    flour.setStockCount(14)
 
 
 
@@ -114,7 +114,7 @@ def main():
     )
     record = c.fetchone()
 
-    # print(record)  # must translate into Invenotry object
+    print(record)  # must translate into Invenotry object
 
     # ------------------------------------------------------------
 
@@ -129,7 +129,7 @@ def main():
                , flour.getStockCount()
                , flour.getItemNumber()
                )
-            )
+        )
 
     except sqlite3.IntegrityError:
         print("ERROR: ID doesn't exist!")
@@ -146,6 +146,6 @@ def main():
 
 
 
-
+###############################################################################
 
 main()

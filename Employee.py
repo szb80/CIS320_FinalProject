@@ -9,6 +9,10 @@ import Validate
 
 class Employee:
 
+    # set global sizes
+    MIN_NUMBER_SIZE = 1
+    MAX_NUMBER_SIZE = 99
+
     # initialization def
     def __init__(self):
         self.__empNumber = 000
@@ -16,6 +20,7 @@ class Employee:
         self.__empNameLast = "_BLANK LAST NAME"
         self.__empDOB = "01010000"
         self.__empPhone = "1234567890"
+        self.__manager = False
 
 
     def setEmpName(self, first, last):
