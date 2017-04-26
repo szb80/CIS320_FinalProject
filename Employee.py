@@ -11,7 +11,7 @@ class Employee:
 
     # set global sizes
     MIN_NUMBER_SIZE = 1
-    MAX_NUMBER_SIZE = 99
+    MAX_NUMBER_SIZE = 100
 
     # initialization def
     def __init__(self):
