@@ -1,8 +1,8 @@
 # CIS320 Final Project
-# Hugo & Seth
+# Gustavo, Hugo & Seth
 # SB 4/23
 
-import Validate, Inventory, sqlite3
+import Validate, Inventory, InventorySQL
 
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 
@@ -39,40 +39,41 @@ def displayCheckInventoryMenu():
     validMenuChoice = False
 
     while not validMenuChoice:
-        # print the menu
-        print("Enter the item number to view (A for all): ")
+        # print the menu and take initial input
+        itemNumSearch = input("Enter the item number to view (A for all): ")
 
-        # take initial input
-        itemNumSearch = input("Enter the item number to view: ")
-
-        # check if itemNumSearch is char for SEARCH or VIEW ALL
+        # check if itemNumSearch is char for VIEW ALL
         try:
-            if str.upper(itemNumSearch) == 'A':  # exit loop and display menu
-                validMenuChoice = True
-                displayAllInventory()
+            if str.upper(itemNumSearch) == 'A':
+                menuSelection = 0
+                validMenuChoice = True  # exit loop and display menu
         except ValueError:
+            # catch any error but continue
             print()
-        # print(ERROR_PROMPT) #############################################
-        # would display even if a valid item number is passed!!!!!
 
         # check if if itemNumSearch is an int, else throw error
         try:
             menuSelection = int(itemNumSearch)  # attempt cast to int
-        except ValueError:
-            print(ERROR_PROMPT)
+        except ValueError as err:
+            print(ERROR_PROMPT, "displayCheckInventoryMenu()", err)
 
         # menu choice is an int and not ALL, user must want to check item number
         # now check if int is within appropriate range
-        # prevents wild or negative number input
-        if itemNumSearch >= Inventory.getMIN_ITEM_NUMBER_SIZE:
-            validMenuChoice = True
-        elif itemNumSearch <= Inventory.getMAX_ITEM_NUMBER_SIZE:
-            validMenuChoice = True
+        inventorySizeParams = Inventory.Inventory()  # create instance to call
+        if int(inventorySizeParams.MIN_ITEM_NUMBER_SIZE) \
+                <= menuSelection \
+                <= int(inventorySizeParams.MAX_ITEM_NUMBER_SIZE):
+            validMenuChoice = True  # passes all tests and exits loop
 
-    # input passes all tests and is safe to pass to searchInventory()
-    searchInventory(itemNumSearch)
+    # input passes all tests; run search and print result
+    if menuSelection == 0:
+        displayAllInventory()
+    else:
+        print(searchInventory(menuSelection))
+
 
 def displayModifyInventoryMenu():
+    # displays the Modify Inventory menu
     validMenuChoice = False
 
     while not validMenuChoice:
@@ -84,26 +85,19 @@ def displayModifyInventoryMenu():
     return True
 
 
-
-
 def searchInventory(itemNum):
-    # SEARCHES INVENTORY DB FOR ITEM NUM MATCHING ARGUMENT #################
-    # read inventory record to variable
-    # convert SQL to inventory object
-    # returns matching inventory instance ##################################
-    return True
+    # searches database for record matching itemNum
+    # returns Inventory instance matching itemNum or blank
+
+    if InventorySQL.searchForSQLRecord(itemNum):
+        return InventorySQL.createInventoryFromSQLRecord(itemNum)
+
+    return None
 
 
 def displayAllInventory():
     # displays all inventory in the database
+
+
     return True
 
-
-
-
-
-###### CURRENTLY UNUSED IN SPEC ############################################
-def searchInventory(searchStr):
-    # SEARCHES INVENTORY DB FOR NAME MATCHING searchStr  ###################
-    # returns matching inventory instance ##################################
-    return True

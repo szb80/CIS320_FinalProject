@@ -6,6 +6,8 @@
 
 
 def validateString(phrase):
+    if phrase.isdigit():
+        return False
     return all(x.isalpha() or x.isspace() for x in phrase)
 
 

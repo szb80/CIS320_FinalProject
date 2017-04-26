@@ -7,11 +7,13 @@ import Inventory, sqlite3
 
 def createSQLRecord(inventoryItem):
     # creates a new SQL record for a non-existing itemNumber
+    # returns boolean for successful record creation
+    # + creates connection to database
+
     # setup database connection
     conn = sqlite3.connect('inventory.db')
-    table_name = 'inventory_db'
     c = conn.cursor()
-    success = False
+    success = False  # initial return condition
 
     try:
         # try to execute insert record command on c
@@ -22,10 +24,10 @@ def createSQLRecord(inventoryItem):
                      , inventoryItem.getStockCount()
                      )
                   )
-        success = True
+        success = True  # successful creation of record
 
-    except sqlite3.IntegrityError:
-        print("ERROR: itemID already exists!")
+    except sqlite3.IntegrityError as err:
+        print("ERROR: itemID already exists!  createSQLRecord()", err)
 
     # write and close db
     conn.commit()
@@ -36,11 +38,13 @@ def createSQLRecord(inventoryItem):
 
 def updateSQLRecord(inventoryItem):
     # updates an existing SQL record
+    # returns boolean for record updated successfully
+    # + creates connection to database
+
     # setup database connection
     conn = sqlite3.connect('inventory.db')
-    table_name = 'inventory_db'
     c = conn.cursor()
-    success = False
+    success = False  # initial return condition
 
     try:
         # try to execute update matching record command on c
@@ -52,10 +56,10 @@ def updateSQLRecord(inventoryItem):
                , inventoryItem.getItemNumber()
                )
         )
-        success = True
+        success = True  # successful update record
 
-    except sqlite3.IntegrityError:
-        print("ERROR: itemID doesn't exist!")
+    except sqlite3.IntegrityError as err:
+        print("ERROR: itemID doesn't exist!  updateSQLRecord()", err)
 
     # write and close DB
     conn.commit()
@@ -64,25 +68,82 @@ def updateSQLRecord(inventoryItem):
     return success
 
 
-def searchSQLRecord(inventoryItem):
+def searchForSQLRecord(itemID):
     # searches the database for a matching record to the passed itemID
-    # and returns a boolean T/F
+    # returns a boolean for record is found
+    # + creates connection to database
+
     # connect to database
     conn = sqlite3.connect('inventory.db')
-    table_name = 'inventory_db'
     c = conn.cursor()
 
     c.execute(
       '''SELECT * FROM inventory_db WHERE itemNumber=?'''
-      , (inventoryItem.getItemNumber(),)
+      , (itemID,)
     )
     idExists = c.fetchone()
 
-    conn.close()  # close DB connection
+    conn.close()  # close DB connection without commit
 
-    if idExists:
+    if idExists:  # record was found in DB
         return True
     else:
         return False
 
+
+def createInventoryFromSQLRecord(itemID):
+    # takes a passed itemID and creates an Inventory instance
+    # with the data returned from the record
+    # returns Inventory instance for matching itemID
+    # + creates connection to database
+
+    if searchForSQLRecord(itemID):  # record exists
+        # connect to database
+        conn = sqlite3.connect('inventory.db')
+        c = conn.cursor()
+
+        # select row from
+        c.execute(
+            '''SELECT * FROM inventory_db WHERE itemNumber=?'''
+            , (itemID,))
+        idExists = c.fetchone()
+
+        # close connection without commit
+        conn.close()
+
+        # build Inventory instance to return with 4 columns
+        return Inventory.Inventory(idExists[0]
+                                   , idExists[1]
+                                   , idExists[2]
+                                   , idExists[3]
+                                   )
+
+    else:
+        return None
+
+
+def deleteSQLRecord(itemID):
+    # drops a record from the database
+    # returns boolean for successful
+    # + creates connection to database
+
+    # search for record to delete
+    if searchForSQLRecord(itemID):
+        try:
+            # connect to database
+            conn = sqlite3.connect('inventory.db')
+            c = conn.cursor()
+            conn.execute('''DELETE from inventory_db where itemNumber = ?'''
+                         , (itemID,))
+
+            # commit and execute
+            conn.commit()
+            conn.close()
+
+            return True
+
+        except sqlite3.IntegrityError as err:
+            print("**ERROR: deleteSQLRecord()", err)
+
+    return False
 

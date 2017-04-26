@@ -1,10 +1,11 @@
 # CIS320 Final Project
-# Hugo & Seth
+# Gustavo, Hugo & Seth
 # SB 4/23
 
 # Inventory class
 
 import Validate
+
 
 class Inventory:
 
@@ -13,12 +14,45 @@ class Inventory:
     MAX_ITEM_NUMBER_SIZE = 9999
 
 
+    @staticmethod
+    def getMIN_ITEM_NUMBER_SIZE():
+        temp = Inventory.MIN_ITEM_NUMBER_SIZE
+        return temp
+
+
+    @staticmethod
+    def getMAX_ITEM_NUMBER_SIZE(self):
+        temp = Inventory.MAX_ITEM_NUMBER_SIZE
+        return temp
+
+
     # initialization def
-    def __init__(self):
-        self.__itemNumber = 0
-        self.__itemName = "_BLANK NAME"
-        self.__itemDesc = "_BLANK SHORT DESCRIPTION"
-        self.__stockCount = 0
+    def __init__(self
+                 , in_itemNumber = None
+                 , in_itemName = None
+                 , in_itemDesc = None
+                 , in_stockCount = None
+                 ):
+
+        if in_itemNumber is None:
+            self.__itemNumber = 0  # default case
+        else:
+            self.__itemNumber = in_itemNumber  # loaded constructor
+
+        if in_itemName is None:
+            self.__itemName = "_BLANK-NAME"  # default case
+        else:
+            self.__itemName = in_itemName  # loaded constructor
+
+        if in_itemDesc is None:
+            self.__itemDesc = "_BLANK-SHORT-DESCRIPTION"  # default case
+        else:
+            self.__itemDesc = in_itemDesc  # loaded constructor
+
+        if in_stockCount is None:
+            self.__stockCount = 0  # default case
+        else:
+            self.__stockCount = in_stockCount  # loaded constructor
 
 
     # setters
@@ -69,27 +103,10 @@ class Inventory:
         return self.__stockCount
 
 
-    def getMIN_ITEM_NUMBER_SIZE(self):
-        return self.MIN_ITEM_NUMBER_SIZE
-
-
-    def getMAX_ITEM_NUMBER_SIZE(self):
-        return self.MAX_ITEM_NUMBER_SIZE
-
-
     # default print() override
     def __str__(self):
-        print(self.__itemNumber
-              , self.__itemName
-              , self.__itemDesc
-              , self.__stockCount)
+        return str(self.__itemNumber) + "\n" \
+               + self.__itemName + "\n" \
+               + self.__itemDesc + "\n" \
+               + str(self.__stockCount)
 
-
-
-
-
-
-    # NOT USED IN SPEC #########################################################
-    def displayInventory(self, itemNum):  ######################################
-        self.searchInventory(itemNum)  # search for item number and
-        self.displayInventory(itemNum)  # display for returned inventory item
