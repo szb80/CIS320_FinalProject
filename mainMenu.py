@@ -3,7 +3,7 @@
 # SB 4/20
 
 # Imports
-import InventoryModule, Inventory, sqlite3
+import InventoryModule
 
 # Initialize variables
 

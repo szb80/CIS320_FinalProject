@@ -14,18 +14,6 @@ class Inventory:
     MAX_ITEM_NUMBER_SIZE = 9999
 
 
-    @staticmethod
-    def getMIN_ITEM_NUMBER_SIZE():
-        temp = Inventory.MIN_ITEM_NUMBER_SIZE
-        return temp
-
-
-    @staticmethod
-    def getMAX_ITEM_NUMBER_SIZE(self):
-        temp = Inventory.MAX_ITEM_NUMBER_SIZE
-        return temp
-
-
     # initialization def
     def __init__(self
                  , in_itemNumber = None

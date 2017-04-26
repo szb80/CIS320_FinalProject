@@ -75,7 +75,6 @@ def displayCheckInventoryMenu():
 def displayModifyInventoryMenu():
     # displays the Modify Inventory menu
     validMenuChoice = False
-
     while not validMenuChoice:
         # print the options
         print("(1)  Add Inventory Item")

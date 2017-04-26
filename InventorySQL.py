@@ -77,6 +77,7 @@ def searchForSQLRecord(itemID):
     conn = sqlite3.connect('inventory.db')
     c = conn.cursor()
 
+    # select record
     c.execute(
       '''SELECT * FROM inventory_db WHERE itemNumber=?'''
       , (itemID,)
@@ -146,4 +147,3 @@ def deleteSQLRecord(itemID):
             print("**ERROR: deleteSQLRecord()", err)
 
     return False
-
