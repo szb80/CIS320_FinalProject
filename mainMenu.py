@@ -12,6 +12,33 @@ import InventoryModule
 MAX_MODULES = 3
 
 
+# prompts for employee number to login to program
+def getEmployeeNumber():
+    while True:
+        try:
+            userLogin = int(input("Please enter your Employee Number: "))
+        except ValueError:
+            print("Sorry Invalid Input.")
+            return getEmployeeNumber()
+
+        if userLogin < 1:
+            print("Sorry Invalid Input.")
+            return getEmployeeNumber()
+
+        elif userLogin > 100:
+            print("Sorry Invalid Input.")
+            return getEmployeeNumber()
+        else:
+            break
+    return userLogin
+
+
+def setManagerFlag(empNum): ####################################################
+    # checks for manager flag in matching employee record
+
+
+    return False
+
 # validates if the menu choice was within the appropriate range
 def validateMenuChoice(num):
     return num in range(1, MAX_MODULES + 1)

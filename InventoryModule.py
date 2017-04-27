@@ -6,6 +6,7 @@ import Validate, Inventory, InventorySQL
 
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 
+
 # displays the home page of the Inventory module menu
 def displayInventoryMenuHome():
     validMenuChoice = False

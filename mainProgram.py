@@ -4,7 +4,8 @@
 
 import mainMenu
 
-#managerFlag = setManagerFlag( userLogin() )
+managerFlag = mainMenu.setManagerFlag( mainMenu.getEmployeeNumber() )
+
 
 managerFlag = True
 
