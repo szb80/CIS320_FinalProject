@@ -17,6 +17,7 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
         print("INVENTORY MENU", "-" * 20)
         print("1) Check Inventory")
         print("2) Modify Inventory")
+        print("0) Return")
 
         # take user menu choice
         try:
@@ -31,6 +32,8 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
         elif menuChoice == 2:  # modify inventory
             validMenuChoice = True
             displayModifyInventoryMenu()
+        elif menuChoice == 0:  # return up one level
+            return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
 
@@ -48,8 +51,9 @@ def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
             if str.upper(itemNumSearch) == 'A':
                 menuSelection = 0
                 validMenuChoice = True  # exit loop and display menu
+                continue
         except ValueError:
-            # catch any error but continue
+            # catch error but continue
             print()
 
         # check if if itemNumSearch is an int, else throw error
@@ -76,13 +80,14 @@ def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
 def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
     # displays the Modify Inventory menu
     validMenuChoice = False  # sentinel for menu display loop
-    menuChoice = 0  # initialize to 0
+    menuChoice = -1  # initialize to -1
 
     while not validMenuChoice:
         # print the options
         print("(1)  Add Inventory Item")
         print("(2)  Modify Inventory Item")
         print("(3)  Delete Inventory Item")
+        print("(0)  Return")
 
         # take user input
         menuChoice = input("")
@@ -94,7 +99,7 @@ def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
             print(ERROR_PROMPT, " at displayCheckInventoryMenu() ", err)
 
         # now check if int is within appropriate range
-        if int(menuChoice) >= 1 or int(menuChoice) <= 3:
+        if int(menuChoice) >= 0 or int(menuChoice) <= 3:
             validMenuChoice = True  # passes all tests and exits loop
 
     # input passes all tests; run search and print result
@@ -104,13 +109,14 @@ def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
         modifyInventoryItem()
     elif int(menuChoice) == 3:
         deleteInventoryItem()
+    elif int(menuChoice) == 0:
+        return True  # user wants to quit, exit function and return to caller
     else:
         displayModifyInventoryMenu()  # error case, should not display
 
-    return True
 
 
-def searchInventory(itemNum):
+def searchInventory(itemNum):  # ++++++++++++++++++++++++++++++++++++++++++++++
     # searches database for record matching itemNum
     # returns Inventory instance matching itemNum or blank
 
@@ -120,14 +126,15 @@ def searchInventory(itemNum):
     return None
 
 
-def displayAllInventory():
+def displayAllInventory():  # -------------------------------------------------
     # displays all inventory in the database
 
-    # create list of all inventory in DB
+    # create list of all inventory in DB  -------------------------------------
 
 
+    # call displayInventory() on each record number  --------------------------
 
-    # call displayInventory() on each record number
+    print(InventorySQL.displayTable())
 
 
 
@@ -244,5 +251,3 @@ def deleteInventoryItem(): # ++++++++++++++++++++++++++++++++++++++++++++++++++
             isValid = True
 
     return InventorySQL.deleteSQLRecord(itemID)
-
-

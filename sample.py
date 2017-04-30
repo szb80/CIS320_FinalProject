@@ -15,4 +15,8 @@ loaded = Inventory.Inventory(37, "37 Loaded", "37 loaded function call", 97)
 
 #InventoryModule.displayCheckInventoryMenu()
 
-InventoryModule.displayModifyInventoryMenu()
+#InventoryModule.displayModifyInventoryMenu()
+
+#InventoryModule.displayInventoryMenuHome()
+
+InventorySQL.displayTable()

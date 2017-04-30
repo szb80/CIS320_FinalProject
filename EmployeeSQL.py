@@ -1,11 +1,11 @@
 # CIS320 Final Project
 # Gustavo, Hugo & Seth
-# SB 4/25
+# SB 4/30
 
 import Employee, sqlite3
 
 
-def createSQLRecord(newEmployee): # +++++++++++++++++++++++++++++++++++++++++
+def createSQLRecord(newEmployee):
     # creates a new SQL record for a non-existing itemNumber
     # returns boolean for successful record creation
     # + creates connection to database
@@ -17,11 +17,12 @@ def createSQLRecord(newEmployee): # +++++++++++++++++++++++++++++++++++++++++
 
     try:
         # try to execute insert record command on c
-        c.execute("INSERT INTO employee_db VALUES(?, ?, ?, ?)"
+        c.execute("INSERT INTO employee_db VALUES(?, ?, ?, ?, ?)"
                   , (newEmployee.getEmpNumber()
-                     , newEmployee.getEmpName()
-                     , newEmployee.getItemDesc()
-                     , newEmployee.getStockCount()
+                     , newEmployee.getEmpNameFirst()
+                     , newEmployee.getEmpNameLast()
+                     , newEmployee.getEmpPhone()
+                     , newEmployee.getManager()
                      )
                   )
         success = True  # successful creation of record
@@ -36,30 +37,31 @@ def createSQLRecord(newEmployee): # +++++++++++++++++++++++++++++++++++++++++
     return success
 
 
-def updateSQLRecord(inventoryItem): # ++++++++++++++++++++++++++++++++++++++++++
+def updateSQLRecord(updateEmp):
     # updates an existing SQL record
     # returns boolean for record updated successfully
     # + creates connection to database
 
     # setup database connection
-    conn = sqlite3.connect('inventory.db')
+    conn = sqlite3.connect('employee.db')
     c = conn.cursor()
     success = False  # initial return condition
 
     try:
         # try to execute update matching record command on c
         c.execute(
-            "UPDATE inventory_db SET itemName=?, itemDesc=?, stockCount=? WHERE itemNumber=?"
-            , (inventoryItem.getItemName()
-               , inventoryItem.getItemDesc()
-               , inventoryItem.getStockCount()
-               , inventoryItem.getItemNumber()
+            "UPDATE employee_db SET empNameFirst=?, empNameLast=?, empPhone=?, manager=? WHERE empNumber=?"
+            , (updateEmp.getEmpNameFirst()
+               , updateEmp.getEmpNameLast()
+               , updateEmp.getEmpPhone()
+               , updateEmp.getManager()
+               , updateEmp.getEmpNumber()
                )
         )
         success = True  # successful update record
 
     except sqlite3.IntegrityError as err:
-        print("ERROR: itemID doesn't exist!  updateSQLRecord()", err)
+        print("ERROR: itemID doesn't exist in updateSQLRecord()", err)
 
     # write and close DB
     conn.commit()
@@ -68,19 +70,19 @@ def updateSQLRecord(inventoryItem): # ++++++++++++++++++++++++++++++++++++++++++
     return success
 
 
-def searchForSQLRecord(itemID):  # ++++++++++++++++++++++++++++++++++++++++++++
+def searchForSQLRecord(empNum):
     # searches the database for a matching record to the passed itemID
     # returns a boolean for record is found
     # + creates connection to database
 
     # connect to database
-    conn = sqlite3.connect('inventory.db')
+    conn = sqlite3.connect('employee.db')
     c = conn.cursor()
 
     # select record
     c.execute(
-      '''SELECT * FROM inventory_db WHERE itemNumber=?'''
-      , (itemID,)
+      '''SELECT * FROM employee_db WHERE empNumber=?'''
+      , (empNum,)
     )
     idExists = c.fetchone()
 
@@ -92,28 +94,28 @@ def searchForSQLRecord(itemID):  # ++++++++++++++++++++++++++++++++++++++++++++
         return False
 
 
-def createInventoryFromSQLRecord(itemID):  # ++++++++++++++++++++++++++++++++++
+def createEmployeeFromSQLRecord(empNum):
     # takes a passed itemID and creates an Inventory instance
     # with the data returned from the record
     # returns Inventory instance for matching itemID
     # + creates connection to database
 
-    if searchForSQLRecord(itemID):  # record exists
+    if searchForSQLRecord(empNum):  # record exists
         # connect to database
-        conn = sqlite3.connect('inventory.db')
+        conn = sqlite3.connect('employee.db')
         c = conn.cursor()
 
         # select row from
         c.execute(
             '''SELECT * FROM inventory_db WHERE itemNumber=?'''
-            , (itemID,))
+            , (empNum,))
         idExists = c.fetchone()
 
         # close connection without commit
         conn.close()
 
         # build Inventory instance to return with 4 columns
-        return Inventory.Inventory(idExists[0]
+        return Employee.Employee(idExists[0]
                                    , idExists[1]
                                    , idExists[2]
                                    , idExists[3]
@@ -123,19 +125,19 @@ def createInventoryFromSQLRecord(itemID):  # ++++++++++++++++++++++++++++++++++
         return None
 
 
-def deleteSQLRecord(itemID):  # +++++++++++++++++++++++++++++++++++++++++++++++
+def deleteSQLRecord(empNum):
     # drops a record from the database
     # returns boolean for successful
     # + creates connection to database
 
     # search for record to delete
-    if searchForSQLRecord(itemID):
+    if searchForSQLRecord(empNum):
         try:
             # connect to database
-            conn = sqlite3.connect('inventory.db')
+            conn = sqlite3.connect('employee.db')
             c = conn.cursor()
-            conn.execute('''DELETE from inventory_db where itemNumber = ?'''
-                         , (itemID,))
+            conn.execute('''DELETE from employee_db where empNumber=?'''
+                         , (empNum,))
 
             # commit and execute
             conn.commit()

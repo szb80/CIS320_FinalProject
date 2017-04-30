@@ -5,6 +5,41 @@
 import Inventory, sqlite3
 
 
+def displayTable():
+    # displays all records from the database
+    # returns boolean for successful
+    # + creates connection to database
+
+    # search for record to delete
+    try:
+        # connect to database
+        conn = sqlite3.connect('inventory.db')
+        c = conn.cursor()
+        conn.execute('''SELECT * FROM inventory_db''')
+        print("executed SELECT")##############################################
+        all_rows = c.fetchone()
+        print("executed fetchall()")  #######################################
+
+        print("All_rows literal: ", all_rows)  ################################
+
+        #for row in all_rows:
+            #print("Printing for loop")
+            #print('{0} : {1}, {2}'.format(row[0], row[1], row[2]))
+            #print("ItemID ", row, ": ", row[0], "Name: ", row[1])
+
+        # commit and execute
+        conn.close()
+
+        return True
+
+    except sqlite3.IntegrityError as err:
+        print("**ERROR: at deleteSQLRecord()", err)
+
+    return False
+
+
+
+
 def createSQLRecord(inventoryItem): # +++++++++++++++++++++++++++++++++++++++++
     # creates a new SQL record for a non-existing itemNumber
     # returns boolean for successful record creation

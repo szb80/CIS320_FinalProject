@@ -79,15 +79,19 @@ class Employee:
         return self.__empNumber
 
 
-    def getEmpName(self):
-        return str(self.__empNameFirst + " " + self.__empNameLast)
+    def getEmpNameFirst(self):
+        return str(self.__empNameFirst)
+
+
+    def getEmpNameLast(self):
+        return str(self.__empNameLast)
 
 
     def getEmpPhone(self):
         return self.__empPhone
 
 
-    def getEmpManager(self):
+    def getManager(self):
         return self.__manager
 
 
