@@ -67,20 +67,25 @@ class Employee:
             return True
         return False
 
+
     def setEmpManager(self, isManager):
         # set boolean and return true
         self.__manager = isManager
         return True
 
+
     # getters
     def getEmpNumber(self):
         return self.__empNumber
 
+
     def getEmpName(self):
         return str(self.__empNameFirst + " " + self.__empNameLast)
 
+
     def getEmpPhone(self):
         return self.__empPhone
+
 
     def getEmpManager(self):
         return self.__manager
@@ -97,12 +102,3 @@ class Employee:
                    + "Employee Phone: "
                    + self.__empPhone + "\n"
                    + "Is Manager? " + self.__manager)
-
-
-
-    def searchEmployee(self, empNum):  ######################################
-        self.searchEmployee(empNum)  # search for item number and
-        self.displayEmployee(empNum)  # display for returned inventory item
-
-
-
