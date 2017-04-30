@@ -5,7 +5,7 @@
 import Inventory, sqlite3
 
 
-def createSQLRecord(inventoryItem):
+def createSQLRecord(inventoryItem): # +++++++++++++++++++++++++++++++++++++++++
     # creates a new SQL record for a non-existing itemNumber
     # returns boolean for successful record creation
     # + creates connection to database
@@ -36,7 +36,7 @@ def createSQLRecord(inventoryItem):
     return success
 
 
-def updateSQLRecord(inventoryItem):
+def updateSQLRecord(inventoryItem): # ++++++++++++++++++++++++++++++++++++++++++
     # updates an existing SQL record
     # returns boolean for record updated successfully
     # + creates connection to database
@@ -68,7 +68,7 @@ def updateSQLRecord(inventoryItem):
     return success
 
 
-def searchForSQLRecord(itemID):
+def searchForSQLRecord(itemID):  # ++++++++++++++++++++++++++++++++++++++++++++
     # searches the database for a matching record to the passed itemID
     # returns a boolean for record is found
     # + creates connection to database
@@ -92,7 +92,7 @@ def searchForSQLRecord(itemID):
         return False
 
 
-def createInventoryFromSQLRecord(itemID):
+def createInventoryFromSQLRecord(itemID):  # ++++++++++++++++++++++++++++++++++
     # takes a passed itemID and creates an Inventory instance
     # with the data returned from the record
     # returns Inventory instance for matching itemID
@@ -123,7 +123,7 @@ def createInventoryFromSQLRecord(itemID):
         return None
 
 
-def deleteSQLRecord(itemID):
+def deleteSQLRecord(itemID):  # +++++++++++++++++++++++++++++++++++++++++++++++
     # drops a record from the database
     # returns boolean for successful
     # + creates connection to database
@@ -144,6 +144,6 @@ def deleteSQLRecord(itemID):
             return True
 
         except sqlite3.IntegrityError as err:
-            print("**ERROR: deleteSQLRecord()", err)
+            print("**ERROR: at deleteSQLRecord()", err)
 
     return False

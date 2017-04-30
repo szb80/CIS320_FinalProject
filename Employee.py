@@ -10,17 +10,8 @@ import Validate
 class Employee:
 
     # set global sizes
-    MIN_NUMBER_SIZE = 1
-    MAX_NUMBER_SIZE = 100
-
-
-    # initialization def
-    def __init__(self):
-        self.__empNumber = 000
-        self.__empNameFirst = "_BLANK NAME"
-        self.__empNameLast = "_BLANK LAST NAME"
-        self.__empPhone = "1234567890"
-        self.__manager = False
+    MIN_NUMBER = 1
+    MAX_NUMBER = 100
 
 
     # initialization def
@@ -37,21 +28,28 @@ class Employee:
         else:
             self.__empNumber = in_empNumber  # loaded constructor
 
-        if in_itemName is None:
-            self.__itemName = "_BLANK-NAME"  # default case
+        if in_empNameFirst is None:
+            self.__empNameFirst = "_BLANK-NAME"  # default case
         else:
-            self.__itemName = in_itemName  # loaded constructor
+            self.__empNameFirst = in_empNameFirst  # loaded constructor
 
-        if in_itemDesc is None:
-            self.__itemDesc = "_BLANK-SHORT-DESCRIPTION"  # default case
+        if in_empNameLast is None:
+            self.__empNameLast = "_BLANK-SHORT-DESCRIPTION"  # default case
         else:
-            self.__itemDesc = in_itemDesc  # loaded constructor
+            self.__empNameLast = in_empNameLast  # loaded constructor
 
-        if in_stockCount is None:
-            self.__stockCount = 0  # default case
+        if in_empPhone is None:
+            self.__empPhone = 0000000000  # default case
         else:
-            self.__stockCount = in_stockCount  # loaded constructor
+            self.__empPhone = in_empPhone  # loaded constructor
 
+        if in_manager is None:
+            self.__manager = False  # default case
+        else:
+            self.__manager = in_manager  # loaded constructor
+
+
+    # setters
     def setEmpName(self, first, last):
         # validate both names, set only if both true
         if Validate.validateString(first):
@@ -59,41 +57,50 @@ class Employee:
                 self.__empNameFirst = first
                 self.__empNameLast = last
                 return True
-        return False # one or more failed validation as strings
+        return False # one or more failed string validation
 
 
-    def setEmpDOB(self, date):
-        if Validate.validateInt(date):
-            self.__empDOB = date
+    def setEmpPhone(self, phone):
+        # is phone is valid int, set variable and return true
+        if Validate.validateInt(phone):
+            self.__empDOB = phone
             return True
         return False
 
+    def setEmpManager(self, isManager):
+        # set boolean and return true
+        self.__manager = isManager
+        return True
 
-    def setEmpDOB(self, dob):
-        if Validate.validateInt(dob):
-            self.__empDOB = dob
-            return True
-        return False
+    # getters
+    def getEmpNumber(self):
+        return self.__empNumber
+
+    def getEmpName(self):
+        return str(self.__empNameFirst + " " + self.__empNameLast)
+
+    def getEmpPhone(self):
+        return self.__empPhone
+
+    def getEmpManager(self):
+        return self.__manager
 
 
+    # default print override
     def __str__(self):
-        print("Employee Number:  #", self.__empNumber
-              , "\nEmployee Name:  "
-              , self.__empNameFirst
-              , " "
-              , self.__empNameLast
-              , "\nEmployee DOB:  "
-              , self.__empDOB  ######## process DOB function ###################
-              , "\nEmployee Phone:  ("
-              , self.__empPhone # process phone function #######################
-              , sep = '')
+        return str("Employee Number: #"
+                   + self.__empNumber + "\n"
+                   + "Employee Name: "
+                   + self.__empNameFirst
+                   + " "
+                   + self.__empNameLast + "\n"
+                   + "Employee Phone: "
+                   + self.__empPhone + "\n"
+                   + "Is Manager? " + self.__manager)
 
 
-    def displayEmployee(self):
-        str(self)
 
-
-    def displayInventory(self, empNum):  ######################################
+    def searchEmployee(self, empNum):  ######################################
         self.searchEmployee(empNum)  # search for item number and
         self.displayEmployee(empNum)  # display for returned inventory item
 

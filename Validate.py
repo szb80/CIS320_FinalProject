@@ -4,7 +4,6 @@
 
 # Validate class to provide global validation functions to other classes
 
-
 def validateString(phrase):
     if phrase.isdigit():
         return False
@@ -28,3 +27,21 @@ def validateFloat(num):
     else:
         return True
 
+
+def validateFloatOrEmpty(num):
+    try:
+        if num == "":
+            return True  # is empty
+    except ValueError:
+        return False
+    try:
+        testValue = float(num)
+    except ValueError:
+        return False
+    else:
+        return True
+
+
+def cls():
+    # def to clear the console screen
+    print("\n" * 100)
