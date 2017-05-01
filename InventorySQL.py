@@ -8,7 +8,7 @@
 import Inventory, sqlite3
 
 
-def displayRecord(itemID):
+def displayRecord(itemID): # ++++++++++++++++++++++++++++++++++++++++++++++++++
     # displays a single record from the database
     # returns boolean for successful
     # + creates connection to database
@@ -35,11 +35,11 @@ def displayRecord(itemID):
 
     # catch any errors and return false
     except sqlite3 as err:
-        print("**ERROR: at deleteSQLRecord()", err)
+        print("**ERROR: at displayRecord()", err)
     return False
 
 
-def displayTable():
+def displayTable(): #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # displays all records from the database
     # returns boolean for successful
     # + creates connection to database

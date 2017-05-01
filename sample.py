@@ -21,7 +21,5 @@ import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
 
 #InventoryModule.displayAllInventory()
 
-#seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=True)
-#print(seth)
-
-InventorySQL.displayRecord("tbl_inventory", 33)
+seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=True)
+print(seth)
