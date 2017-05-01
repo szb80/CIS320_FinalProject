@@ -43,7 +43,7 @@ def displayPosMenu():
 
         # check if itemNumSearch is for char for VIEW ALL
         try:
-            if str.upper(itemNumSerach) == 'A':
+            if str.upper(itemNumSearch) == 'A':
                 menuSelection = 0
                 validMenuChoice = True # exit loop and display menu
         except ValueError:
@@ -56,6 +56,6 @@ def displayPosMenu():
         except ValueError as err:
             print(ERROR_PROMPT, "displayPOSMenu()", err)
             continue
-
+            
 
 

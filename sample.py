@@ -17,9 +17,9 @@ import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
 
 #InventoryModule.displayModifyInventoryMenu()
 
-#InventoryModule.displayInventoryMenuHome()
+InventoryModule.displayInventoryMenuHome()
 
 #InventoryModule.displayAllInventory()
 
-seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=True)
-print(seth)
+#seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=True)
+#print(seth)

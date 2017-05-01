@@ -4,10 +4,5 @@
 
 import mainMenu
 
-managerFlag = mainMenu.setManagerFlag( mainMenu.getEmployeeNumber() )
-
-
-managerFlag = True
-
-mainMenu(managerFlag)
+mainMenu(mainMenu.setManagerFlag())
 

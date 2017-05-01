@@ -33,11 +33,17 @@ def getEmployeeNumber():
     return userLogin
 
 
-def setManagerFlag(empNum): #---------------------------------------------------
+def setManagerFlag(): #---------------------------------------------------
     # checks for manager flag in matching employee record
+    managerFlag = False  # initialize to default
 
+    getEmployeeNumber()
 
-    return False
+    # searchSQLForEmpNumber
+
+    # getEmployeeManagerFlag
+
+    return managerFlag
 
 # validates if the menu choice was within the appropriate range
 def validateMenuChoice(num):
