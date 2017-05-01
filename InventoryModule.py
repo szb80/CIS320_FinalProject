@@ -4,7 +4,9 @@
 
 import Validate, Inventory, InventorySQL
 
+# GLOBAL CONSTANTS
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
+SPACER_SIZE = 20
 
 
 # displays the home page of the Inventory module menu
@@ -14,7 +16,7 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
     # loop through invalid input for menu display
     while not validMenuChoice:
         # print the menu
-        print("INVENTORY MENU", "-" * 20)
+        print("INVENTORY MENU", "=" * SPACER_SIZE)
         print("1) Check Inventory")
         print("2) Modify Inventory")
         print("0) Return")
@@ -24,6 +26,7 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
             menuChoice = int(input())
         except ValueError:
             print(ERROR_PROMPT)
+            continue
 
         # call sub modules
         if menuChoice == 1:  # check inventory
@@ -41,6 +44,9 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
 # displays the Check Inventory menu page
 def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
     validMenuChoice = False
+    menuSelection = 1  # initialize display all sentinel
+
+    #Validate.cls()  # clear screen
 
     while not validMenuChoice:
         # print the menu and take initial input
@@ -49,7 +55,7 @@ def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
         # check if itemNumSearch is char for VIEW ALL
         try:
             if str.upper(itemNumSearch) == 'A':
-                menuSelection = 0
+                menuSelection = 0  # sentinel for display all
                 validMenuChoice = True  # exit loop and display menu
                 continue
         except ValueError:
@@ -58,29 +64,41 @@ def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
 
         # check if if itemNumSearch is an int, else throw error
         try:
-            menuSelection = int(itemNumSearch)  # attempt cast to int
+            itemNumSearch = int(itemNumSearch)  # attempt cast to int
         except ValueError as err:
-            print(ERROR_PROMPT, "displayCheckInventoryMenu()", err)
+            print(ERROR_PROMPT)
+            continue
 
         # menu choice is an int and not ALL, user must want to check item number
         # now check if int is within appropriate range
         inventorySizeParams = Inventory.Inventory()  # create instance to call
         if int(inventorySizeParams.MIN_ITEM_NUMBER_SIZE) \
-                <= menuSelection \
+                <= itemNumSearch \
                 <= int(inventorySizeParams.MAX_ITEM_NUMBER_SIZE):
             validMenuChoice = True  # passes all tests and exits loop
 
     # input passes all tests; run search and print result
-    if menuSelection == 0:
+    if menuSelection == 0:  # sentinel set to display all
         displayAllInventory()
     else:
-        print(searchInventory(menuSelection))
+        # search for record
+        if searchInventory(itemNumSearch) is None:  # record does not exist
+            print("Item not found in inventory.")  # notify and exit
+        else:
+            # record found, print it and exit
+            InventorySQL.displayRecord(itemNumSearch)
+
+    displayInventoryMenuHome()  # return to Inventory home menu
 
 
 def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
     # displays the Modify Inventory menu
     validMenuChoice = False  # sentinel for menu display loop
-    menuChoice = -1  # initialize to -1
+    menuChoice = -1  # initialize to -1 as sentinel
+
+    #Validate.cls()  # clear screen
+
+    print("MODIFY INVENTORY ", "-" * SPACER_SIZE)
 
     while not validMenuChoice:
         # print the options
@@ -89,12 +107,12 @@ def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
         print("(3)  Delete Inventory Item")
         print("(0)  Return")
 
-        # take user input
+        # take user input on newline
         menuChoice = input("")
 
         # check if an int, else throw error and catch exception
         try:
-            menuSelection = int(menuChoice)  # attempt cast to int
+            menuChoice = int(menuChoice)  # attempt cast to int
         except ValueError as err:
             print(ERROR_PROMPT, " at displayCheckInventoryMenu() ", err)
 
@@ -104,49 +122,55 @@ def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
 
     # input passes all tests; run search and print result
     if int(menuChoice) == 1:
-        addInventoryItem()
+        if addInventoryItem():
+            print("Item added successfully!")
+        else:  # default case
+            print("Error adding item!  Did not complete.")
+
     elif int(menuChoice) == 2:
-        modifyInventoryItem()
+        if modifyInventoryItem():
+            print("Item modified successfully!")
+        else:  # default case
+            print("Error modifying item!  Did not complete.")
+
     elif int(menuChoice) == 3:
-        deleteInventoryItem()
+        if deleteInventoryItem():
+            print("Record deleted successfully!")
+        else:  # default case
+            print("Nothing was deleted.")
+
     elif int(menuChoice) == 0:
         return True  # user wants to quit, exit function and return to caller
-    else:
-        displayModifyInventoryMenu()  # error case, should not display
 
+    # error case, should not hit during normal execution
+    else:
+        displayModifyInventoryMenu()
+
+    # return to Inventory home menu
+    displayInventoryMenuHome()
 
 
 def searchInventory(itemNum):  # ++++++++++++++++++++++++++++++++++++++++++++++
     # searches database for record matching itemNum
     # returns Inventory instance matching itemNum or blank
-
     if InventorySQL.searchForSQLRecord(itemNum):
         return InventorySQL.createInventoryFromSQLRecord(itemNum)
 
     return None
 
 
-def displayAllInventory():  # -------------------------------------------------
-    # displays all inventory in the database
-
-    # create list of all inventory in DB  -------------------------------------
-
-
-    # call displayInventory() on each record number  --------------------------
-
-    print(InventorySQL.displayTable())
-
-
-
-    return True
+def displayAllInventory():  # ++++++++++++++++++++++++++++++++++++++++++++++++++
+    # displays all the inventory records in the database
+    return InventorySQL.displayTable()
 
 
 def addInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++++++
     # adds a new inventory item
     isValid = False
-    Validate.cls()  # clear screen
 
-    print("ADDING NEW ITEM:", "-" * 20)
+    #Validate.cls()  # clear screen
+
+    print("ADDING NEW RECORD ", "-" * SPACER_SIZE)
 
     while not isValid:
         newItemNum = input("Enter an ID: ")
@@ -180,7 +204,10 @@ def addInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++++++
 def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
     # modifies an existing inventory item
     isValid = False
-    Validate.cls()  # clear screen
+
+    #Validate.cls()  # clear screen
+
+    print("MODIFYING RECORD ", "-" * SPACER_SIZE)
 
     # take an item number to modify and loop until valid
     while not isValid:
@@ -196,6 +223,10 @@ def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
         if InventorySQL.searchForSQLRecord(newItemNum) \
                 and Validate.validateInt(newItemNum):
             isValid = True
+
+    # print copy of current record in db
+    print("Current Record:\n")
+    InventorySQL.displayRecord(newItemNum)
 
     # take updated name and desc strings
     newName = str(input("Enter the updated name: [enter for no change] "))
@@ -234,13 +265,19 @@ def deleteInventoryItem(): # ++++++++++++++++++++++++++++++++++++++++++++++++++
     # deletes an existing inventory record
     isValid = False
 
+    #Validate.cls()
+
+    print("DELETING RECORD ", "-" * SPACER_SIZE)
+
     # loop menu until valid input is entered
     while not isValid:
-        itemID = input("Enter the ID to delete: ")
+        itemID = input("Enter the ID to delete: [0 to cancel] ")
         # check if ID is a number and loop until valid
         if not Validate.validateInt(itemID):
             print("**ERROR: must be a number.")
             continue
+        if int(itemID) == 0:
+            return False
         # check if ID is not in database already and loop until valid
         if not InventorySQL.searchForSQLRecord(itemID):
             print("**ERROR: ID does not exist.")

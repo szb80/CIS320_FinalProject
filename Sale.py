@@ -26,4 +26,3 @@ class Sale:
               , "\nLine Items:  "
               , self.__lineItem
               , sep = '')
-

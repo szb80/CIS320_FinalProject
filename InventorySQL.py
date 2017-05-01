@@ -2,7 +2,41 @@
 # Gustavo, Hugo & Seth
 # SB 4/25
 
+# InventorySQL class
+# Contains methods for accessing the SQL database
+
 import Inventory, sqlite3
+
+
+def displayRecord(itemID):
+    # displays a single record from the database
+    # returns boolean for successful
+    # + creates connection to database
+
+    # search for record to delete
+    try:
+        # connect to database
+        conn = sqlite3.connect('inventory.db')
+        c = conn.cursor()
+
+        # select record
+        c.execute(
+            '''SELECT * FROM inventory_db WHERE itemNumber=?'''
+            , (itemID,)
+        )
+        idExists = c.fetchone()  # load record into variable
+
+        # print record formatted
+        print('Item ID:\t\t{0}\nName:\t\t\t{1}\nDescription:\t{2}\nStock:\t\t\t{3}\n'.format(idExists[0], idExists[1], idExists[2], idExists[3]))
+
+        # close the file and return successful
+        conn.close()
+        return True
+
+    # catch any errors and return false
+    except sqlite3 as err:
+        print("**ERROR: at deleteSQLRecord()", err)
+    return False
 
 
 def displayTable():
@@ -15,29 +49,24 @@ def displayTable():
         # connect to database
         conn = sqlite3.connect('inventory.db')
         c = conn.cursor()
-        conn.execute('''SELECT * FROM inventory_db''')
-        print("executed SELECT")##############################################
-        all_rows = c.fetchone()
-        print("executed fetchall()")  #######################################
 
-        print("All_rows literal: ", all_rows)  ################################
+        # select all rows
+        c.execute('''SELECT * FROM inventory_db''', ())
+        result = c.fetchall()
 
-        #for row in all_rows:
-            #print("Printing for loop")
-            #print('{0} : {1}, {2}'.format(row[0], row[1], row[2]))
-            #print("ItemID ", row, ": ", row[0], "Name: ", row[1])
+        for row in result:
+            print('Item ID:\t\t{0}\nName:\t\t\t{1}\nDescription:\t{2}\nStock:\t\t\t{3}\n'.format(row[0], row[1], row[2], row[3]))
 
-        # commit and execute
+        # close the file
         conn.close()
 
         return True
 
-    except sqlite3.IntegrityError as err:
+    # catch any errors in the file
+    except sqlite3 as err:
         print("**ERROR: at deleteSQLRecord()", err)
 
     return False
-
-
 
 
 def createSQLRecord(inventoryItem): # +++++++++++++++++++++++++++++++++++++++++
@@ -169,7 +198,7 @@ def deleteSQLRecord(itemID):  # +++++++++++++++++++++++++++++++++++++++++++++++
             # connect to database
             conn = sqlite3.connect('inventory.db')
             c = conn.cursor()
-            conn.execute('''DELETE from inventory_db where itemNumber = ?'''
+            conn.execute('''DELETE from inventory_db where itemNumber=?'''
                          , (itemID,))
 
             # commit and execute

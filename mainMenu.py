@@ -33,7 +33,7 @@ def getEmployeeNumber():
     return userLogin
 
 
-def setManagerFlag(empNum): ####################################################
+def setManagerFlag(empNum): #---------------------------------------------------
     # checks for manager flag in matching employee record
 
 
