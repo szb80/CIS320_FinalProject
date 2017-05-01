@@ -2,10 +2,12 @@
 
 import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
 
-#flour = Inventory.Inventory()
-#loaded = Inventory.Inventory(37, "37 Loaded", "37 loaded function call", 97)
+#tacos = Inventory.Inventory()
+#burritos = Inventory.Inventory(38, "Burritos", "Asada", 44)
+#InventorySQL.createSQLRecord(tacos)
+#InventorySQL.createSQLRecord(burritos)
 
-#InventorySQL.createSQLRecord(loaded)
+#print(burritos)
 
 #InventorySQL.createInventoryFromSQLRecord(37)
 
@@ -17,7 +19,7 @@ import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
 
 #InventoryModule.displayModifyInventoryMenu()
 
-InventoryModule.displayInventoryMenuHome()
+#InventoryModule.displayInventoryMenuHome()
 
 #InventoryModule.displayAllInventory()
 
