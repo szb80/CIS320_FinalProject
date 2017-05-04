@@ -16,19 +16,24 @@ def displayPOSMenuHome():
         print("POS MENU", "-" * 20)
         print("1) Make Sale")
         print("2) Modify Sale")
-
+        print("0) Return")
+        
+        # take user menu choice
         try:
             menuChoice = int(input())
         except ValueError:
             print(ERROR_PROMPT)
+        continue
 
         # Call sub modules
-        if menuChoice == 1:
+        if menuChoice == 1: # choose menu item to purchase
             validPOSMenuChoice = True
             displayMakeSaleMenu()
         elif menuChoice == 2: # modify sale
             validPOSMenuChoice = True
             displayModifySaleMenu()
+        elif menuChoice == 0
+            return True # exit function and return to calling menu
         else: # default case
             print(ERROR_PROMPT)
 
@@ -36,6 +41,7 @@ def displayPOSMenuHome():
 # displays the POS menu page
 def displayPosMenu():
     validMenuChoice = False
+    menuSelection = 1
 
     while not validMenuChoice:
         # print the POS menu and take initial input
@@ -57,5 +63,15 @@ def displayPosMenu():
             print(ERROR_PROMPT, "displayPOSMenu()", err)
             continue
             
-
+        inventorySizeParams = Inventory.Inventory()
+        if int(inventorySizeParams.MIN_ITEM_NUMBER_SIZE) \
+                <= intemNumSearch \
+                <= int(inventorySizeParams.MAX_ITEM_NUMBER_SIZE):
+            validMenuChoice = True # passes all tests and exits loop
+            
+    if menuSelection == 0:
+        displayAllInventory()
+    else:
+        
+        #### Think I need to change the last few lines to include the Modify Sale functions right???
 
