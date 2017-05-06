@@ -9,15 +9,15 @@ ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 
 # displays Home Page of the Point Of Sale (POS) module
 def displayPOSMenuHome():
-    validPOSMenuChoice = False
+    validMenuChoice = False
 
     while not validPOSMenuChoice:
         #print POS menu
-        print("POS MENU", "-" * 20)
+        print(POS MENU", "-" * 20)
         print("1) Make Sale")
         print("2) Modify Sale")
         print("0) Return")
-        
+
         # take user menu choice
         try:
             menuChoice = int(input())
@@ -26,14 +26,12 @@ def displayPOSMenuHome():
         continue
 
         # Call sub modules
-        if menuChoice == 1: # choose menu item to purchase
-            validPOSMenuChoice = True
+        if menuChoice == 1:
+            validMenuChoice = True
             displayMakeSaleMenu()
         elif menuChoice == 2: # modify sale
-            validPOSMenuChoice = True
+            validMenuChoice = True
             displayModifySaleMenu()
-        elif menuChoice == 0
-            return True # exit function and return to calling menu
         else: # default case
             print(ERROR_PROMPT)
 
@@ -49,7 +47,7 @@ def displayPosMenu():
 
         # check if itemNumSearch is for char for VIEW ALL
         try:
-            if str.upper(itemNumSearch) == 'A':
+            if str.upper(itemNumSerach) == 'A':
                 menuSelection = 0
                 validMenuChoice = True # exit loop and display menu
         except ValueError:
@@ -62,16 +60,15 @@ def displayPosMenu():
         except ValueError as err:
             print(ERROR_PROMPT, "displayPOSMenu()", err)
             continue
-            
-        inventorySizeParams = Inventory.Inventory()
-        if int(inventorySizeParams.MIN_ITEM_NUMBER_SIZE) \
-                <= intemNumSearch \
-                <= int(inventorySizeParams.MAX_ITEM_NUMBER_SIZE):
-            validMenuChoice = True # passes all tests and exits loop
-            
-    if menuSelection == 0:
-        displayAllInventory()
-    else:
-        
-        #### Think I need to change the last few lines to include the Modify Sale functions right???
+
+        if menuSelection == 0
+            displayAllPosMenu()
+        elif menuChoice == 1
+            return (tacos, 1.00)
+        elif menuChoice == 2
+            return (burrito, 4.00)
+        elif menuChoice == 3
+            return (torta, 4.00)
+        else:
+            return (Please select an item for purchase)
 
