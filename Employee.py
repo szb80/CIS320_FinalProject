@@ -97,13 +97,13 @@ class Employee:
 
     # default print override
     def __str__(self):
-        return str("Employee Number: \t#"
+        return str("Employee Number: \t"
                    + str(self.__empNumber) + "\n"
                    + "Employee Name: \t\t"
                    + str(self.__empNameFirst)
                    + " "
                    + str(self.__empNameLast) + "\n"
-                   + "Employee Phone: \t"
+                   + "Employee Phone:\t\t"
                    + str(self.__empPhone) + "\n"
                    + "Is A Manager? \t\t"
                    + str(self.__manager)

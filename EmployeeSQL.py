@@ -23,20 +23,24 @@ def displayRecord(empID): # ---------------------------------------------------
         )
         idExists = c.fetchone()  # load record into variable
 
+        if idExists:
+            displayEmployee = createEmployeeFromSQLRecord(empID)
+
         # print record formatted
-        print('Employee Number:\t{0}\nEmployee Name:\t\t{1} {2}\nEmployee Phone:\t{3}\nIs A Manager?:\t\t{4}\n'.format(idExists[0], idExists[1], idExists[2], idExists[3], idExists[4]))
+        print(displayEmployee)
+        #print('Employee Number:\t{0}\nEmployee Name:\t\t{1} {2}\nEmployee Phone:\t\t{3}\nIs A Manager?:\t\t{4}\n'.format(idExists[0], idExists[1], idExists[2], idExists[3], idExists[4]))
 
         # close the file and return successful
         conn.close()
         return True
 
     # catch any errors and return false
-    except sqlite3 as err:
+    except sqlite3.IntegrityError as err:
         print("**ERROR: at displayRecord()", err)
     return False
 
 
-def displayTable(): #----------------------------------------------------------
+def displayTable(): # tested
     # displays all records from the database
     # returns boolean for successful
     # + creates connection to database
@@ -52,7 +56,7 @@ def displayTable(): #----------------------------------------------------------
         result = c.fetchall()
 
         for row in result:
-            print('Employee Number:\t{0}\nEmployee Name:\t\t{1} {2}\nEmployee Phone:\t{3}\nIs A Manager?:\t\t{4}\n'.format(row[0], row[1], row[2], row[3], row[4]))
+            print('Employee Number:\t{0}\nEmployee Name:\t\t{1} {2}\nEmployee Phone:\t\t{3}\nIs A Manager?:\t\t{4}\n'.format(row[0], row[1], row[2], row[3], row[4]))
 
         # close the file
         conn.close()
@@ -61,22 +65,26 @@ def displayTable(): #----------------------------------------------------------
 
     # catch any errors in the file
     except sqlite3 as err:
-        print("**ERROR: at deleteSQLRecord()", err)
+        print("**ERROR: at displayTable()", err)
 
     return False
 
 
-def createSQLRecord(newEmployee): #---------------------------------------------
+def createSQLRecord(newEmployee): # tested
     # creates a new SQL record for a non-existing itemNumber
     # returns boolean for successful record creation
     # + creates connection to database
 
-    # setup database connection
-    conn = sqlite3.connect('employee.db')
-    c = conn.cursor()
     success = False  # initial return condition
 
+    if searchForSQLRecord(newEmployee.getEmpNumber()):
+        return success  # record already exists, abort
+
     try:
+        # setup database connection
+        conn = sqlite3.connect('employee.db')
+        c = conn.cursor()
+
         # try to execute insert record command on c
         c.execute("INSERT INTO employee_db VALUES(?, ?, ?, ?, ?)"
                   , (newEmployee.getEmpNumber()
@@ -98,7 +106,7 @@ def createSQLRecord(newEmployee): #---------------------------------------------
     return success
 
 
-def updateSQLRecord(updateEmp): #----------------------------------------------
+def updateSQLRecord(updateEmp): # tested
     # updates an existing SQL record
     # returns boolean for record updated successfully
     # + creates connection to database
@@ -122,7 +130,7 @@ def updateSQLRecord(updateEmp): #----------------------------------------------
         success = True  # successful update record
 
     except sqlite3.IntegrityError as err:
-        print("ERROR: itemID doesn't exist in updateSQLRecord()", err)
+        print("ERROR: empNumber doesn't exist in updateSQLRecord()", err)
 
     # write and close DB
     conn.commit()
@@ -131,7 +139,7 @@ def updateSQLRecord(updateEmp): #----------------------------------------------
     return success
 
 
-def searchForSQLRecord(empNum): #-----------------------------------------------
+def searchForSQLRecord(empNum): # tested
     # searches the database for a matching record to the passed itemID
     # returns a boolean for record is found
     # + creates connection to database
@@ -155,7 +163,7 @@ def searchForSQLRecord(empNum): #-----------------------------------------------
         return False
 
 
-def createEmployeeFromSQLRecord(empNum): # ------------------------------------
+def createEmployeeFromSQLRecord(empNum): # tested
     # takes a passed itemID and creates an Inventory instance
     # with the data returned from the record
     # returns Inventory instance for matching itemID
@@ -168,7 +176,7 @@ def createEmployeeFromSQLRecord(empNum): # ------------------------------------
 
         # select row from
         c.execute(
-            '''SELECT * FROM inventory_db WHERE itemNumber=?'''
+            '''SELECT * FROM employee_db WHERE empNumber=?'''
             , (empNum,))
         idExists = c.fetchone()
 
@@ -187,7 +195,7 @@ def createEmployeeFromSQLRecord(empNum): # ------------------------------------
         return None
 
 
-def deleteSQLRecord(empNum): # ------------------------------------------------
+def deleteSQLRecord(empNum): # tested
     # drops a record from the database
     # returns boolean for successful
     # + creates connection to database
