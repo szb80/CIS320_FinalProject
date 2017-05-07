@@ -11,12 +11,12 @@ import Validate
 
 class Sale:
 
-    # available menu items:
-    menu = ( ("Tacos", 1)
-             , ("Burrito", 4)
-             , ("Soda", 1.5)
-             , ("Water", 1)
-             )
+    # available menu items in dictionary:
+    menu = { 1 : ("Tacos", 1)
+             , 2 : ("Burrito", 4)
+             , 3 : ("Soda", 1.5)
+             , 4 : ("Water", 1)
+             }
 
 
     # initialization def
