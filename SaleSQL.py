@@ -1,11 +1,11 @@
 # CIS320 Final Project
 # Gustavo, Hugo & Seth
-# SB 4/30
+# SB 5/6
 
-import Employee, sqlite3
+import Sale, sqlite3
 
 
-def displayRecord(empID): # tested
+def displayRecord(empID): # --------------------------------------------------
     # displays a single record from the database
     # returns boolean for successful
     # + creates connection to database
@@ -40,23 +40,26 @@ def displayRecord(empID): # tested
     return False
 
 
-def displayTable(): # tested
-    # displays all records from the database
+def displaySale(saleNum): # --------------------------------------------------------
+    # displays all records for a single sale number from the database
     # returns boolean for successful
     # + creates connection to database
 
     # search for record to delete
     try:
         # connect to database
-        conn = sqlite3.connect('employee.db')
+        conn = sqlite3.connect('sales.db')
         c = conn.cursor()
 
         # select all rows
-        c.execute('''SELECT * FROM employee_db''', ())
+        c.execute(
+            '''SELECT * FROM sales_db WHERE saleNumber=?'''
+            , (saleNum,)
+        )
         result = c.fetchall()
 
         for row in result:
-            print('Employee Number:\t{0}\nEmployee Name:\t\t{1} {2}\nEmployee Phone:\t\t{3}\nIs A Manager?:\t\t{4}\n'.format(row[0], row[1], row[2], row[3], row[4]))
+            print('MenuItemID:\t{1}\nQuantity:\t\t{2}'.format(row[1], row[2]))
 
         # close the file
         conn.close()
@@ -65,12 +68,12 @@ def displayTable(): # tested
 
     # catch any errors in the file
     except sqlite3 as err:
-        print("**ERROR: at displayTable()", err)
+        print("**ERROR: at displaySale()", err)
 
     return False
 
 
-def createSQLRecord(newEmployee): # tested
+def createSQLRecord(newSale): # ------------------------------------------
     # creates a new SQL record for a non-existing itemNumber
     # returns boolean for successful record creation
     # + creates connection to database
@@ -106,7 +109,7 @@ def createSQLRecord(newEmployee): # tested
     return success
 
 
-def updateSQLRecord(updateEmp): # tested
+def updateSQLRecord(updateEmp): # ---------------------------------------------
     # updates an existing SQL record
     # returns boolean for record updated successfully
     # + creates connection to database
@@ -139,7 +142,7 @@ def updateSQLRecord(updateEmp): # tested
     return success
 
 
-def searchForSQLRecord(empNum): # tested
+def searchForSQLRecord(empNum): # --------------------------------------------
     # searches the database for a matching record to the passed itemID
     # returns a boolean for record is found
     # + creates connection to database
@@ -163,7 +166,7 @@ def searchForSQLRecord(empNum): # tested
         return False
 
 
-def createEmployeeFromSQLRecord(empNum): # tested
+def createEmployeeFromSQLRecord(empNum): # ----------------------------------
     # takes a passed itemID and creates an Inventory instance
     # with the data returned from the record
     # returns Inventory instance for matching itemID
@@ -195,7 +198,7 @@ def createEmployeeFromSQLRecord(empNum): # tested
         return None
 
 
-def deleteSQLRecord(empNum): # tested
+def deleteSQLRecord(empNum): # -----------------------------------------------
     # drops a record from the database
     # returns boolean for successful
     # + creates connection to database
