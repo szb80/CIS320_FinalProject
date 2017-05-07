@@ -5,41 +5,6 @@
 import Sale, sqlite3
 
 
-def displayRecord(empID): # --------------------------------------------------
-    # displays a single record from the database
-    # returns boolean for successful
-    # + creates connection to database
-
-    # search for record to delete
-    try:
-        # connect to database
-        conn = sqlite3.connect('employee.db')
-        c = conn.cursor()
-
-        # select record
-        c.execute(
-            '''SELECT * FROM employee_db WHERE empNumber=?'''
-            , (empID,)
-        )
-        idExists = c.fetchone()  # load record into variable
-
-        if idExists:
-            displayEmployee = createEmployeeFromSQLRecord(empID)
-
-        # print record formatted
-        print(displayEmployee)
-        #print('Employee Number:\t{0}\nEmployee Name:\t\t{1} {2}\nEmployee Phone:\t\t{3}\nIs A Manager?:\t\t{4}\n'.format(idExists[0], idExists[1], idExists[2], idExists[3], idExists[4]))
-
-        # close the file and return successful
-        conn.close()
-        return True
-
-    # catch any errors and return false
-    except sqlite3.IntegrityError as err:
-        print("**ERROR: at displayRecord()", err)
-    return False
-
-
 def displaySale(saleNum): # --------------------------------------------------------
     # displays all records for a single sale number from the database
     # returns boolean for successful
@@ -74,27 +39,22 @@ def displaySale(saleNum): # ----------------------------------------------------
 
 
 def createSQLRecord(newSale): # ------------------------------------------
-    # creates a new SQL record for a non-existing itemNumber
+    # creates a new SQL record for a non-existing saleNumber
     # returns boolean for successful record creation
     # + creates connection to database
 
     success = False  # initial return condition
 
-    if searchForSQLRecord(newEmployee.getEmpNumber()):
-        return success  # record already exists, abort
-
     try:
         # setup database connection
-        conn = sqlite3.connect('employee.db')
+        conn = sqlite3.connect('sales.db')
         c = conn.cursor()
 
         # try to execute insert record command on c
         c.execute("INSERT INTO employee_db VALUES(?, ?, ?, ?, ?)"
-                  , (newEmployee.getEmpNumber()
-                     , newEmployee.getEmpNameFirst()
-                     , newEmployee.getEmpNameLast()
-                     , newEmployee.getEmpPhone()
-                     , newEmployee.getManager()
+                  , (newSale.getSaleNumber()
+                     , newSale.getSaleLineItemNum()
+                     , newSale.getSaleLineItemQty()
                      )
                   )
         success = True  # successful creation of record
@@ -109,31 +69,29 @@ def createSQLRecord(newSale): # ------------------------------------------
     return success
 
 
-def updateSQLRecord(updateEmp): # ---------------------------------------------
+def updateSQLRecordQty(updateSale): # ---------------------------------------------
     # updates an existing SQL record
     # returns boolean for record updated successfully
     # + creates connection to database
 
     # setup database connection
-    conn = sqlite3.connect('employee.db')
+    conn = sqlite3.connect('sales.db')
     c = conn.cursor()
     success = False  # initial return condition
 
     try:
         # try to execute update matching record command on c
         c.execute(
-            "UPDATE employee_db SET empNameFirst=?, empNameLast=?, empPhone=?, manager=? WHERE empNumber=?"
-            , (updateEmp.getEmpNameFirst()
-               , updateEmp.getEmpNameLast()
-               , updateEmp.getEmpPhone()
-               , updateEmp.getManager()
-               , updateEmp.getEmpNumber()
+            "UPDATE sales_db SET lineItemQty=? WHERE saleNumber=? AND lineItemNum=?"
+            , (updateSale.getSaleLineItemQty()
+               , updateSale.getSaleLineItemNum()
+               , updateSale.getSaleNumber()
                )
         )
         success = True  # successful update record
 
     except sqlite3.IntegrityError as err:
-        print("ERROR: empNumber doesn't exist in updateSQLRecord()", err)
+        print("ERROR: saleNumber doesn't exist in updateSQLRecord()", err)
 
     # write and close DB
     conn.commit()
@@ -142,21 +100,21 @@ def updateSQLRecord(updateEmp): # ---------------------------------------------
     return success
 
 
-def searchForSQLRecord(empNum): # --------------------------------------------
+def searchForSQLRecord(saleNum): # --------------------------------------------
     # searches the database for a matching record to the passed itemID
     # returns a boolean for record is found
     # + creates connection to database
 
     # connect to database
-    conn = sqlite3.connect('employee.db')
+    conn = sqlite3.connect('sales.db')
     c = conn.cursor()
 
     # select record
     c.execute(
-      '''SELECT * FROM employee_db WHERE empNumber=?'''
-      , (empNum,)
+      '''SELECT * FROM sales_db WHERE saleNumber=?'''
+      , (saleNum,)
     )
-    idExists = c.fetchone()
+    idExists = c.fetchall()
 
     conn.close()  # close DB connection without commit
 
@@ -166,51 +124,19 @@ def searchForSQLRecord(empNum): # --------------------------------------------
         return False
 
 
-def createEmployeeFromSQLRecord(empNum): # ----------------------------------
-    # takes a passed itemID and creates an Inventory instance
-    # with the data returned from the record
-    # returns Inventory instance for matching itemID
-    # + creates connection to database
-
-    if searchForSQLRecord(empNum):  # record exists
-        # connect to database
-        conn = sqlite3.connect('employee.db')
-        c = conn.cursor()
-
-        # select row from
-        c.execute(
-            '''SELECT * FROM employee_db WHERE empNumber=?'''
-            , (empNum,))
-        idExists = c.fetchone()
-
-        # close connection without commit
-        conn.close()
-
-        # build Inventory instance to return with 4 columns
-        return Employee.Employee(idExists[0]
-                                   , idExists[1]
-                                   , idExists[2]
-                                   , idExists[3]
-                                   , idExists[4]
-                                   )
-
-    else:
-        return None
-
-
-def deleteSQLRecord(empNum): # -----------------------------------------------
+def deleteSQLRecord(saleNum): # -----------------------------------------------
     # drops a record from the database
     # returns boolean for successful
     # + creates connection to database
 
     # search for record to delete
-    if searchForSQLRecord(empNum):
+    if searchForSQLRecord(saleNum):
         try:
             # connect to database
-            conn = sqlite3.connect('employee.db')
+            conn = sqlite3.connect('sales.db')
             c = conn.cursor()
-            conn.execute('''DELETE from employee_db where empNumber=?'''
-                         , (empNum,))
+            conn.execute('''DELETE from sales_db where saleNumber=?'''
+                         , (saleNum,))
 
             # commit and execute
             conn.commit()

@@ -62,6 +62,10 @@ class Sale:
 
 
     # getters
+    def getSaleNumber(self):
+        return self.__saleNumber  # return value
+
+
     def getSaleLineItemNum(self):
         return self.__lineItemNum  # return value
 
