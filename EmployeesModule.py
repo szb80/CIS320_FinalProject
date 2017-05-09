@@ -164,7 +164,7 @@ def addEmployee():  # --------------------------------------------------------
     if managerInt == 1:
         newManager = True
 
-    # #all variables are now populated and validated
+    # all variables are now populated and validated
 
     # make an object
     newEmployee = Employee.Employee(newEmpNum
@@ -175,7 +175,6 @@ def addEmployee():  # --------------------------------------------------------
 
     # attempt write and return final status
     return EmployeeSQL.createSQLRecord(newEmployee)
-
 
 
 def deactivateEmployee(): # ---------------------------------------------------

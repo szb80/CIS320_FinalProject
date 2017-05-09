@@ -2,8 +2,9 @@
 # Gustavo, Hugo & Seth
 #SB 4/30
 
-import Validate, MakingSale, SQLSale
+import Validate, Sale, SaleSQL, mainMenu
 
+# global constants
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 
 
@@ -11,9 +12,9 @@ ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 def displayPOSMenuHome():
     validMenuChoice = False
 
-    while not validPOSMenuChoice:
+    while not validMenuChoice:
         #print POS menu
-        print(POS MENU", "-" * 20)
+        print("POS MENU", "-" * 20)
         print("1) Make Sale")
         print("2) Modify Sale")
         print("0) Return")
@@ -23,7 +24,7 @@ def displayPOSMenuHome():
             menuChoice = int(input())
         except ValueError:
             print(ERROR_PROMPT)
-        continue
+            continue
 
         # Call sub modules
         if menuChoice == 1:
@@ -34,6 +35,8 @@ def displayPOSMenuHome():
             displayModifySaleMenu()
         else: # default case
             print(ERROR_PROMPT)
+
+    mainMenu.mainMenu()  # return to home menu
 
 
 # displays the POS menu page
@@ -61,13 +64,13 @@ def displayPosMenu():
             print(ERROR_PROMPT, "displayPOSMenu()", err)
             continue
 
-        if menuSelection == 0
+        if menuSelection == 0:
             displayAllPosMenu()
-        elif menuChoice == 1
+        elif menuChoice == 1:
             return (tacos, 1.00)
-        elif menuChoice == 2
+        elif menuChoice == 2:
             return (burrito, 4.00)
-        elif menuChoice == 3
+        elif menuChoice == 3:
             return (torta, 4.00)
         else:
             return (Please select an item for purchase)
