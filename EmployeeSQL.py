@@ -1,6 +1,6 @@
 # CIS320 Final Project
 # Gustavo, Hugo & Seth
-# SB 4/30
+# SB 5/2
 
 import Employee, sqlite3
 
@@ -45,7 +45,7 @@ def displayTable(): # tested
     # returns boolean for successful
     # + creates connection to database
 
-    # search for record to delete
+    # search for records
     try:
         # connect to database
         conn = sqlite3.connect('employee.db')
@@ -163,6 +163,30 @@ def searchForSQLRecord(empNum): # tested
         return False
 
 
+def searchForSQLRecordName(empName):  # -------------------------------------
+    # searches the database for a matching record to the passed name
+    # returns a boolean for record is found
+    # + creates connection to database
+
+    # connect to database
+    conn = sqlite3.connect('employee.db')
+    c = conn.cursor()
+
+    # select record
+    c.execute(
+        '''SELECT * FROM employee_db WHERE empNameFirst=?'''
+        , (empName,)
+    )
+    idExists = c.fetchone()
+
+    conn.close()  # close DB connection without commit
+
+    if idExists:  # record was found in DB
+        return True
+    else:
+        return False
+
+
 def createEmployeeFromSQLRecord(empNum): # tested
     # takes a passed itemID and creates an Inventory instance
     # with the data returned from the record
@@ -219,3 +243,62 @@ def deleteSQLRecord(empNum): # tested
             print("**ERROR: at deleteSQLRecord()", err)
 
     return False
+
+
+def displayScheduleTable(): # -------------------------------------------------
+    # displays all records from the database
+    # returns boolean for successful
+    # + creates connection to database
+
+    # search for record
+    try:
+        # connect to database
+        conn = sqlite3.connect('employee.db')
+        c = conn.cursor()
+
+        # select all rows
+        c.execute('''SELECT * FROM employeeSchedule_db''', ())
+        result = c.fetchall()
+
+        # print schedule to screen
+        for row in result:
+            print('{0}\t\t{1}'.format(row[0], row[1]))
+
+        # close the file
+        conn.close()
+
+        return True
+
+    # catch any errors in the file
+    except sqlite3 as err:
+        print("**ERROR: at displayScheduleTable()", err)
+
+    return False
+
+
+def updateSQLScheduleRecord(day, updateEmp): # ------------------------------
+    # updates a schedule record to the passed employee
+    # returns boolean for record updated successfully
+    # + creates connection to database
+
+    # setup database connection
+    conn = sqlite3.connect('employee.db')
+    c = conn.cursor()
+    success = False  # initial return condition
+
+    try:
+        # try to execute update matching record command on c
+        c.execute(
+            "UPDATE employeeSchedule_db SET Employee=? WHERE Day=?"
+            , (updateEmp, day)
+        )
+        success = True  # successful update record
+
+    except sqlite3.IntegrityError as err:
+        print("ERROR: record does not exist in updateSQLRecord()", err)
+
+    # write and close DB
+    conn.commit()
+    conn.close()
+
+    return success

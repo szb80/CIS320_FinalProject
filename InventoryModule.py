@@ -2,7 +2,7 @@
 # Gustavo, Hugo & Seth
 # SB 4/23
 
-import Validate, Inventory, InventorySQL
+import Validate, Inventory, InventorySQL, mainMenu
 
 # GLOBAL CONSTANTS
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
@@ -39,6 +39,8 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
             return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
+
+    mainMenu.mainMenu()  # return to main menu upon exit
 
 
 # displays the Check Inventory menu page
