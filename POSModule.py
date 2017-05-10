@@ -6,7 +6,8 @@ import Validate, Sale, SaleSQL, mainMenu
 
 # global constants
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
-
+SPACER_SIZE = 20
+foodMenu  = { 1: (Tacos, 1), 2: (Burrito, 4), 3: (Soda, 1.5), 5: (Water, 1.0) }
 
 # displays Home Page of the Point Of Sale (POS) module
 def displayPOSMenuHome():
@@ -64,14 +65,44 @@ def displayPosMenu():
             print(ERROR_PROMPT, "displayPOSMenu()", err)
             continue
 
-        if menuSelection == 0:
-            displayAllPosMenu()
-        elif menuChoice == 1:
-            return (tacos, 1.00)
-        elif menuChoice == 2:
-            return (burrito, 4.00)
-        elif menuChoice == 3:
-            return (torta, 4.00)
+        # take user input on newline
+        menuChoice = input("")
+        
+        try:
+            menuChoice = int(menuChoice)
+        except ValueError as err:
+            print(ERROR_PROMPT, " at displayPOSMenu() ", err)
+
+        # now check if int is within appropriate range
+        if int(menuChoice = True # passed all tests and exits loop
+
+        # input passes all test; search line items and print result
+        if int(menuChoice) == 1:
+               if makeSale():
+                   print("Item selected successfully")
+               else: # default case
+                   print("Error adding item! Did not complete.")
+
+        elif int(menuChoice) == 2:
+               if modifySale():
+                   print("Sale modified successfully!")
+               else: # default case
+                   print("Error modifying sale! Did not complete.")
+
+        elif int(menuChoice) == 0:
+               return True # user wants to return to the main menu
+
+        # error case, should not hit during normal execution
         else:
-            return (Please select an item for purchase)
+               displayPOSMenuHome()
+
+
+
+def searchSales(lineItemNum):
+        # searches database for record matching lineItemNum
+        # returns Sales instance matching the lineItemNum or blank
+        if salesSQL.searchForSQLRecord(lineItemNum):
+            return salesSQL.creatSalesFromSQLRecord(lineItemNum)
+
+        return None
 
