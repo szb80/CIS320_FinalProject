@@ -2,12 +2,12 @@
 
 import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
 
-#tacos = Inventory.Inventory()
-#burritos = Inventory.Inventory(38, "Burritos", "Asada", 44)
-#InventorySQL.createSQLRecord(tacos)
-#InventorySQL.createSQLRecord(burritos)
+#empty = Inventory.Inventory()
+#burritos = Inventory.Inventory(40, "Burritos", "Asada burrito fully loaded", 14)
 
 #print(burritos)
+
+InventoryModule.addInventoryItem()
 
 #InventorySQL.createInventoryFromSQLRecord(37)
 
@@ -17,11 +17,14 @@ import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
 
 #InventoryModule.displayCheckInventoryMenu()
 
+#InventoryModule.displayAllInventory()
+
 #InventoryModule.displayModifyInventoryMenu()
 
 #InventoryModule.displayInventoryMenuHome()
 
-#InventoryModule.displayAllInventory()
+
+
 
 #seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=False)
 #gustavo = Employee.Employee(2, 'Gustavo', 'Cazares', '3214567890', False)

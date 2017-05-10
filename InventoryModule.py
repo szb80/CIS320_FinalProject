@@ -168,37 +168,41 @@ def displayAllInventory():  # ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 def addInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++++++
     # adds a new inventory item
-    isValid = False
-
-    #Validate.cls()  # clear screen
+    isValid = False  # initialize menu sentinel
 
     print("ADDING NEW RECORD ", "-" * SPACER_SIZE)
 
+    # start menu loop
     while not isValid:
         newItemNum = input("Enter an ID: ")
         # check if ID is a number and loop until valid
         if not Validate.validateInt(newItemNum):
             print("**ERROR: must be a number.")
+            continue
         # check if ID is in database already and loop until valid
         if InventorySQL.searchForSQLRecord(newItemNum):
             print("**ERROR: ID already exists.")
+            continue
 
         # check if both criteria are met and exit loop
         if not InventorySQL.searchForSQLRecord(newItemNum) \
                 and Validate.validateInt(newItemNum):
             isValid = True
 
+    # begin taking input for item:
     newName = str(input("Enter the name: "))  # take name
+
     newDesc = str(input("Enter the description: "))  # take description
 
     newStock = input("Enter the stock count: ")  # take stock count
     while not Validate.validateFloat(newStock): # validate is number
         newStock = input("**ERROR: must be as number. Enter the stock count: ")
 
-    # all variables now populated and validated
+    # all variables are now populated and validated
 
-    # make an object
+    # make an Inventory object instance
     newInventory = Inventory.Inventory(newItemNum, newName, newDesc, newStock)
+
     # attempt write and return status
     return InventorySQL.createSQLRecord(newInventory)
 
@@ -206,8 +210,6 @@ def addInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++++++
 def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
     # modifies an existing inventory item
     isValid = False
-
-    #Validate.cls()  # clear screen
 
     print("MODIFYING RECORD ", "-" * SPACER_SIZE)
 
@@ -217,9 +219,11 @@ def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
         # check if ID is a number and loop until valid
         if not Validate.validateInt(newItemNum):
             print("**ERROR: must be a number.")
+            continue  # reset loop to top
         # check if ID is in database already and loop until valid
         if not InventorySQL.searchForSQLRecord(newItemNum):
             print("**ERROR: ID does not exist.")
+            continue  # reset loop to top
 
         # check if both criteria are met and exit loop
         if InventorySQL.searchForSQLRecord(newItemNum) \
@@ -257,7 +261,7 @@ def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
     if newStock == "":
         newStock = oldInventory.getStockCount()
 
-    # make an object
+    # make an object instance
     newInventory = Inventory.Inventory(newItemNum, newName, newDesc, newStock)
     # attempt write and return status
     return InventorySQL.updateSQLRecord(newInventory)
