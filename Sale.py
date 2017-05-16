@@ -2,23 +2,12 @@
 # Hugo & Seth
 # SB 4/23
 
-# Sale class
+# Sale class defines a sale line item object for writing to the database
+# Each sale may have one or more line items written to the database
 
 import Validate
 
-# Initialize variables
-
-
 class Sale:
-
-    # available menu items in dictionary:
-    menu = { 1 : ("Tacos", 1)
-             , 2 : ("Burrito", 4)
-             , 3 : ("Soda", 1.5)
-             , 4 : ("Water", 1)
-             }
-
-
     # initialization def
     def __init__(self
                  , in_saleNumber = None
@@ -34,8 +23,8 @@ class Sale:
             self.__lineItemNum = 0  # default case
         else:  # set to passed argument
             try:  # check for passed string instead of int
-                # if menu choice is within range of menu size, then set
-                if 0 <= in_lineItemNum < len(Sale.menu):
+                # if menu choice is within range, then set
+                if in_lineItemNum > 0:
                     self.__lineItemNum = in_lineItemNum
             except ValueError:
                 self.__lineItemNum = 0  # set to default upon failure
@@ -77,6 +66,8 @@ class Sale:
     # default print override
     def __str__(self):
         print("Sale #", self.__saleNumber
-              , "\nLine Items:  "
-              , self.__lineItem
+              , "\t"
+              , self.__lineItemNum
+              , "\t"
+              , self.__lineItemQty
               , sep = '')

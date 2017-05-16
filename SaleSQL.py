@@ -2,7 +2,7 @@
 # Gustavo, Hugo & Seth
 # SB 5/6
 
-import Sale, sqlite3
+import sqlite3
 
 
 def displaySale(saleNum): # --------------------------------------------------------
@@ -38,6 +38,41 @@ def displaySale(saleNum): # ----------------------------------------------------
     return False
 
 
+def returnSaleQuantity(saleNum, menuID): # --------------------------------------------------------
+    # displays all records for a single sale number from the database
+    # returns boolean for successful
+    # + creates connection to database
+
+    # search for record to delete
+    try:
+        # connect to database
+        conn = sqlite3.connect('sales.db')
+        c = conn.cursor()
+
+        # select all rows
+        c.execute(
+            '''SELECT * FROM sales_db WHERE saleNumber=? AND lineItemNum=?'''
+            , (saleNum, menuID,)
+        )
+        result = c.fetchall()
+
+        qty = 0  # initialize to 0
+
+        for row in result:
+            qty += row[2]
+
+        # close the file
+        conn.close()
+
+        return qty
+
+    # catch any errors in the file and return empty
+    except sqlite3 as err:
+        print("**ERROR: at displaySale()", err)
+
+    return 0
+
+
 def createSQLRecord(newSale): # ------------------------------------------
     # creates a new SQL record for a non-existing saleNumber
     # returns boolean for successful record creation
@@ -51,7 +86,7 @@ def createSQLRecord(newSale): # ------------------------------------------
         c = conn.cursor()
 
         # try to execute insert record command on c
-        c.execute("INSERT INTO employee_db VALUES(?, ?, ?, ?, ?)"
+        c.execute("INSERT INTO sales_db VALUES(?, ?, ?)"
                   , (newSale.getSaleNumber()
                      , newSale.getSaleLineItemNum()
                      , newSale.getSaleLineItemQty()
@@ -148,3 +183,4 @@ def deleteSQLRecord(saleNum): # -----------------------------------------------
             print("**ERROR: at deleteSQLRecord()", err)
 
     return False
+

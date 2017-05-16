@@ -43,4 +43,5 @@ def validateFloatOrEmpty(num):
 
 def cls():
     # def to clear the console screen
-    print("\n" * 100)
+    #print("\n" * 100)
+    return

@@ -9,17 +9,18 @@ ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 SPACER_SIZE = 20
 
 
-# displays the home page of the Inventory module menu
-def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
+def displayInventoryMenuHome():  # tested
+    # displays the home page of the Inventory module menu
+
     validMenuChoice = False
 
     # loop through invalid input for menu display
     while not validMenuChoice:
         # print the menu
         print("INVENTORY MENU", "=" * SPACER_SIZE)
-        print("1) Check Inventory")
-        print("2) Modify Inventory")
-        print("0) Return")
+        print("(1)  Check Inventory")
+        print("(2)  Modify Inventory")
+        print("(0)  Return")
 
         # take user menu choice
         try:
@@ -36,15 +37,17 @@ def displayInventoryMenuHome():  # ++++++++++++++++++++++++++++++++++++++++++++
             validMenuChoice = True
             displayModifyInventoryMenu()
         elif menuChoice == 0:  # return up one level
+            mainMenu.mainMenu()
             return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
 
-    mainMenu.mainMenu()  # return to main menu upon exit
+    displayInventoryMenuHome()  # return to main menu upon exit
 
 
-# displays the Check Inventory menu page
-def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
+def displayCheckInventoryMenu():  # tested
+    # displays the Check Inventory menu page
+
     validMenuChoice = False
     menuSelection = 1  # initialize display all sentinel
 
@@ -93,16 +96,16 @@ def displayCheckInventoryMenu():  # +++++++++++++++++++++++++++++++++++++++++++
     displayInventoryMenuHome()  # return to Inventory home menu
 
 
-def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
+def displayModifyInventoryMenu():  # tested
     # displays the Modify Inventory menu
-    validMenuChoice = False  # sentinel for menu display loop
+    exitFlag = False  # sentinel for menu display loop
     menuChoice = -1  # initialize to -1 as sentinel
 
     #Validate.cls()  # clear screen
 
     print("MODIFY INVENTORY ", "-" * SPACER_SIZE)
 
-    while not validMenuChoice:
+    while not exitFlag:
         # print the options
         print("(1)  Add Inventory Item")
         print("(2)  Modify Inventory Item")
@@ -120,7 +123,7 @@ def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
 
         # now check if int is within appropriate range
         if int(menuChoice) >= 0 or int(menuChoice) <= 3:
-            validMenuChoice = True  # passes all tests and exits loop
+            exitFlag = True  # passes all tests and exits loop
 
     # input passes all tests; run search and print result
     if int(menuChoice) == 1:
@@ -152,7 +155,7 @@ def displayModifyInventoryMenu():  #+++++++++++++++++++++++++++++++++++++++++++
     displayInventoryMenuHome()
 
 
-def searchInventory(itemNum):  # ++++++++++++++++++++++++++++++++++++++++++++++
+def searchInventory(itemNum):  # tested
     # searches database for record matching itemNum
     # returns Inventory instance matching itemNum or blank
     if InventorySQL.searchForSQLRecord(itemNum):
@@ -161,12 +164,12 @@ def searchInventory(itemNum):  # ++++++++++++++++++++++++++++++++++++++++++++++
     return None
 
 
-def displayAllInventory():  # ++++++++++++++++++++++++++++++++++++++++++++++++++
+def displayAllInventory():  # tested
     # displays all the inventory records in the database
     return InventorySQL.displayTable()
 
 
-def addInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++++++
+def addInventoryItem():  # tested
     # adds a new inventory item
     isValid = False  # initialize menu sentinel
 
@@ -207,7 +210,7 @@ def addInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++++++
     return InventorySQL.createSQLRecord(newInventory)
 
 
-def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
+def modifyInventoryItem():  # tested
     # modifies an existing inventory item
     isValid = False
 
@@ -267,7 +270,7 @@ def modifyInventoryItem():  # +++++++++++++++++++++++++++++++++++++++++++++++++
     return InventorySQL.updateSQLRecord(newInventory)
 
 
-def deleteInventoryItem(): # ++++++++++++++++++++++++++++++++++++++++++++++++++
+def deleteInventoryItem(): # tested
     # deletes an existing inventory record
     isValid = False
 

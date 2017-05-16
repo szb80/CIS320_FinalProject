@@ -1,151 +1,250 @@
 # CIS320 Final Project POS
 # Gustavo, Hugo & Seth
-#SB 4/30
+# GC 5/12, SB 5/15
 
-import Validate, Sale, SaleSQL, mainMenu
+import Validate, Sale, SaleSQL, mainMenu, datetime
 
 # global constants
 ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 SPACER_SIZE = 20
-foodMenu  = { 1: (Tacos, 1), 2: (Burrito, 4), 3: (Soda, 1.5), 5: (Water, 1.0) }
 
-# displays Home Page of the Point Of Sale (POS) module
-def displayPOSMenuHome():
-    validMenuChoice = False
+# initialize menu dictionary
+foodMenu  = { 1: ("Taco", 1)
+    , 2: ("Burrito", 4)
+    , 3: ("Soda", 1.5)
+    , 4: ("Water", 1.0)
+              }
 
-    while not validMenuChoice:
+
+def displayPOSMenuHome(): # tested
+    # displays Home Page of the Point Of Sale (POS) module
+    exitFlag = False  # menu sentinel
+
+    while not exitFlag:
         #print POS menu
-        print("POS MENU", "-" * 20)
-        print("1) Make Sale")
-        print("2) Modify Sale")
-        print("0) Return")
+        print("POS MENU", "=" * SPACER_SIZE)
+        print("(1)  Make Sale")
+        print("(2)  Modify Sale")
+        print("(0)  Return")
 
         # take user menu choice
         try:
             menuChoice = int(input())
         except ValueError:
             print(ERROR_PROMPT)
-            continue
+            continue  # reset loop to top
 
         # Call sub modules
-        if menuChoice == 1:
-            validMenuChoice = True
+        if int(menuChoice) == 1:  # make a sale
             displayMakeSaleMenu()
-        elif menuChoice == 2: # modify sale
-            validMenuChoice = True
+        elif int(menuChoice) == 2:  # modify sale
             displayModifySaleMenu()
+        elif int(menuChoice) == 0:  # exit case
+            exitFlag = True
         else: # default case
             print(ERROR_PROMPT)
 
     mainMenu.mainMenu()  # return to home menu
 
 
-# displays the POS menu page
-def displayPosMenu():
-    validMenuChoice = False
-    menuSelection = 1
+def displayMakeSaleMenu(): # tested
+    # creates a new sale to write to database
 
-    while not validMenuChoice:
-        # print the POS menu and take initial input
-        itemNumSearch = input( "Enter the sale item number to view (A for all): " )
+    # set a timestamp that will become the sale number for use
+    # throughout the rest of the transaction
+    saleNumber = int(str(datetime.datetime.utcnow().timestamp()).split(".")[0])
+    exitFlag, invalid = False, True  # loop sentinel for menus
+    selection, quantity = -1, 0  # initialize out of range
 
-        # check if itemNumSearch is for char for VIEW ALL
+    # display sale menu
+    print("MAKE SALE", "-" * SPACER_SIZE)
+    while not exitFlag:
+        # show the menu options
+        print("Add to sale or (0) to exit:")
+        for k, v in foodMenu.items():
+            print("\t"
+                  , k
+                  , "\t\t$"
+                  , "{:.02f}".format(v[1])
+                  , "\t\t"
+                  , v[0]
+                  , sep="")
+
         try:
-            if str.upper(itemNumSerach) == 'A':
-                menuSelection = 0
-                validMenuChoice = True # exit loop and display menu
+            selection = int(input(""))
         except ValueError:
-            # catch any error but continue
-            print()
+            print("**ERROR: Not a number!")
+            continue  # return to top of loop and try again
 
-        # check if itemNumSearch in an int, else throw error
+        if selection == 0:
+            exitFlag = True
+
+        elif selection not in foodMenu.keys():
+            print("**ERROR: Not a valid selection!")
+            continue  # reset to top
+
+        else:  # passed menu selection validation, continue to next step
+            while invalid:  # quantity validation loop
+                print("Enter the Quantity: ")
+                try:
+                    quantity = int(input())
+                except ValueError:
+                    print("**ERROR: Not a number!")
+                    continue
+                if quantity > 0:
+                    break  # valid quantity, continue to next step
+                else:  # error case, catch everything else
+                    continue  # and return to top of quantity loop
+
+            # all validations passed and data collected
+            # create Sale instance with validated data
+            lineItem = Sale.Sale(saleNumber, selection, quantity)
+
+            # attempt write to database
+            if SaleSQL.createSQLRecord(lineItem):
+                print("Success!")
+            else:  # error case, should not occur
+                print("**ERROR: Purchase item not saved to database!")
+
+    if not exitFlag:
+        # sale process completed, proceed with finalization
+        totalPrice = 0
+
+        for k,v in foodMenu.items():
+            if SaleSQL.searchForSQLRecord(saleNumber):  # sale exists, continue
+                # add to total price the quantity times the cost
+                totalPrice += SaleSQL.returnSaleQuantity(saleNumber, k) * v[1]
+
+        print("TOTAL:"
+            , "." * SPACER_SIZE
+            , "$"
+            , "{:.02f}".format(totalPrice)
+            , sep="")
+
+    displayPOSMenuHome()  # return to home menu, sale completed
+
+
+def displayModifySaleMenu(): # -----------------------------------------------
+    # displays the modify sale submenu
+    exitFlag = False
+    saleNumber = 1
+    menuChoice = -1
+
+    print("MODIFY SALE", "-" * SPACER_SIZE)  # display header
+
+    # get a valid sale to modify
+    while not SaleSQL.searchForSQLRecord(saleNumber):
+        print("Enter the sale number to modify or (0) to exit: ")
         try:
-            menuSelection = int(itemNumSearch) # attempt cast to int
-        except ValueError as err:
-            print(ERROR_PROMPT, "displayPOSMenu()", err)
+            saleNumber = int(input())
+        except ValueError:
+            print("**ERROR: Enter a valid number!")
             continue
+        if int(saleNumber) == 0:
+            exitFlag = True
+            break  # abort early and skip rest of function
+        print("**ERROR: Sale does not exist!")  # error case
 
-        # take user input on newline
-        menuChoice = input("")
-        
+    # DISPLAY MODIFY SUBMENU OPTIONS
+    while not exitFlag:
+        # display primary menu options after successful
+        print("(1)  Adjust Quantity")
+        print("(2)  Refund Item")
+
         try:
-            menuChoice = int(menuChoice)
-        except ValueError as err:
-            print(ERROR_PROMPT, " at displayPOSMenu() ", err)
+            menuChoice = int(input())
+        except ValueError:
+            print("**ERROR: Must be a number!")
 
-        # now check if int is within appropriate range
-        if int(menuChoice = True # passed all tests and exits loop
-
-        # input passes all test; search line items and print result
-        if int(menuChoice) == 1: 
-               if makeSale():
-                   print("Item selected successfully")
-               else: # default case
-                   print("Error adding item! Did not complete.")
-
+        if int(menuChoice) == 1:
+            if modifySaleLineItemQty(saleNumber):
+                print("Updated successfully!")
+            else:
+                print("**ERROR: Failed to update!")
         elif int(menuChoice) == 2:
-               if modifySale():
-                   print("Sale modified successfully!")
-               else: # default case
-                   print("Error modifying sale! Did not complete.")
+            if refundSaleLineItem(saleNumber):
+                print("Updated Successfully!")
+            else:
+                print("**ERROR: Failed to update!")
+        else:  # error case
+            print(ERROR_PROMPT)
+            continue  # back to top of modify submenu, out of range
 
-        elif int(menuChoice) == 0:
-               return True # user wants to return to the main menu
-
-        # error case, should not hit during normal execution
-        else:
-               displayPOSMenuHome()
+    return True
 
 
+def modifySaleLineItemQty(saleNum):
+    # adjusts the quantity of a sale item
+    # initialize variables
+    menuItem, newQty = 0, 0
+    menuFlag, found = False, False
 
-def searchSales(lineItemNum):
-        # searches database for record matching lineItemNum
-        # returns Sales instance matching the lineItemNum or blank
-        if salesSQL.searchForSQLRecord(lineItemNum):
-            return salesSQL.creatSalesFromSQLRecord(lineItemNum)
+    if SaleSQL.searchForSQLRecord(saleNum):
+        # sale exists, proceed with function
 
-        return None
+        while not menuFlag:
 
+            print("Enter the menu number to modify: ")
+            # show the menu options
+            for k, v in foodMenu.items():
+                print("\t"
+                      , k
+                      , "\t\t$"
+                      , "{:.02f}".format(v[1])
+                      , "\t\t"
+                      , v[0]
+                      , sep="")
 
-def displaySaleNumber():
-    # displays all sale records in the database
-    return salesSQL.saleNumber()
+            # take the user input
+            try:
+                menuItem = int(input())
+            except ValueError:
+                print(ERROR_PROMPT)
 
-
-def modifySaleLineItemQty():
-    # adjsuts sale item quantity
-    isValid = False # initialize menu sentinel
-
-    print("Adjusted item quantity", "-" * SPACER_SIZE)
-
-    # start menu loop
-    while not isValid:
-        lineItemQty = input("Enter the quantity of the item you want to order: ")
-        # check if quantity is available and loop until valid
-        if not Validate.validateInt(lineItemQty):
-            print("**ERROR: select valid amount.")
-            continue
-
-        # check if both criteria are met and exit loop
-        if not salesSQL.searchForSQLRecord(lineItemQty) \
-               and Validate.validateInt(lineItemQty):
-            isValid = True
-        
-    # begin taking input for item:
-    lineItemNum = str("Enter the item you wish to purchase: ") # take name of item
-
-    lineItemQty = str("Enter the quantity: ") # take the amount of the item
-
-    # make a new sale record
-    newSaleNumber = salesSQL.createSQLRecord(newSaleNumber) ##### NOT SURE HOW TO COMPLETE THIS RECORD!!!
-
-    # attempt write and return status
-    return saleSQL.createSQLRecord(newSaleNumber)
+            # validate within menu range
+            if menuItem in range(0, len(foodMenu) + 1):
+                # see if this item was sold in this sale
+                for k,v in foodMenu.items():
+                    if
 
 
-    # print copy of current record in db
-    print("Current Record:\n")
-    salesSQL.displayRecord(saleItemNum)
+
+    else:
+        return False  # sale not found in database!  error case
+
+
+
+# def modifySaleLineItemQty():
+#     # adjsuts sale item quantity
+#     isValid = False  # initialize menu sentinel
+#
+#     print("Adjusted item quantity", "-" * SPACER_SIZE)
+#
+#     # start menu loop
+#     while not isValid:
+#         lineItemQty = input("Enter the quantity of the item you want to order: ")
+#         # check if quantity is available and loop until valid
+#         if not Validate.validateInt(lineItemQty):
+#             print("**ERROR: select valid amount.")
+#             continue
+#
+#         # check if both criteria are met and exit loop
+#         if not SaleSQL.searchForSQLRecord(lineItemQty) \
+#                 and Validate.validateInt(lineItemQty):
+#             isValid = True
+#
+#     # begin taking input for item:
+#     lineItemNum = str("Enter the item you wish to purchase: ") # take name of item
+#
+#     lineItemQty = str("Enter the quantity: ") # take the amount of the item
+#
+#     # make a new sale record
+#     newSaleNumber = SaleSQL.createSQLRecord(newSaleNumber) ##### NOT SURE HOW TO COMPLETE THIS RECORD!!!
+#
+#     # attempt write and return status
+#     return SaleSQL.createSQLRecord(newSaleNumber)
+
+
 
 def deleteSaleNumber():
     # deletes an existing order
@@ -160,14 +259,14 @@ def deleteSaleNumber():
         saleNumber = input("Enter the sale number to delete: [0 to cancel] " )
         # check if saleNumber is a number and loop until valid
         if not Validate.validateInt(saleNum):O
-            print("**ERROR: must be a number.")
-            continue
-        if int(saleNum) == 0:
-            return False
-        # check if sale number is still in database and loop until valid
-        if salesSQL.searchForSQLRecord(saleNum) \
-               and Validate.validateInt(saleNum):
-            isValid = True
+        print("**ERROR: must be a number.")
+        continue
+    if int(saleNum) == 0:
+        return False
+    # check if sale number is still in database and loop until valid
+    if SaleSQL.searchForSQLRecord(saleNum) \
+            and Validate.validateInt(saleNum):
+        isValid = True
 
-    return salesSQL.deleteSQLRecord(saleNum)
+    return SaleSQL.deleteSQLRecord(saleNum)
 

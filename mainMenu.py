@@ -3,38 +3,42 @@
 # SB 4/20
 
 # Imports
-import InventoryModule
+import InventoryModule, EmployeesModule, POSModule
 
 # Initialize variables
+managerFlag = False  # default to false
 
 # Global static for total modules available in program
 # Adjust the MAX_MODULES variable when adding additional modules to program.
 MAX_MODULES = 3
 
 
-# prompts for employee number to login to program
-def getEmployeeNumber():
-    while True:
-        try:
+def getEmployeeNumber():  # --------------------------------------------------
+    # prompts for employee number to login to program
+
+    returnCondition = False  # set return sentinel
+
+    while not returnCondition:
+        try:  # filter non-int input
             userLogin = int(input("Please enter your Employee Number: "))
         except ValueError:
-            print("Sorry Invalid Input.")
-            return getEmployeeNumber()
+            print("**ERROR: enter a number!")
+            continue
 
-        if userLogin < 1:
-            print("Sorry Invalid Input.")
-            return getEmployeeNumber()
+        # check that within range of acceptable employee numbers
+        if 1 <= userLogin < 100:  # is within range
+            print("Thank you!")
+            returnCondition = True
+            return userLogin
 
-        elif userLogin > 100:
-            print("Sorry Invalid Input.")
-            return getEmployeeNumber()
         else:
-            break
-    return userLogin
+            print("**ERROR: Out of range!")
+            continue  # reset loop
+
 
 
 def setManagerFlag(): #---------------------------------------------------
-    # checks for manager flag in matching employee record
+# checks for manager flag in matching employee record
     managerFlag = False  # initialize to default
 
     getEmployeeNumber()
@@ -45,14 +49,15 @@ def setManagerFlag(): #---------------------------------------------------
 
     return managerFlag
 
-# validates if the menu choice was within the appropriate range
+
 def validateMenuChoice(num):
+# validates if the menu choice was within the appropriate range
     return num in range(1, MAX_MODULES + 1)
 
 
+def mainMenu():
 # displays the main menu
-# accepts the managerFlag boolean to determine menu display
-def mainMenu(managerFlag):
+
     menuChoice = -1
 
     # main menu loop, display menu until valid selection is made
@@ -63,7 +68,7 @@ def mainMenu(managerFlag):
         if managerFlag:  # only for the bosses!
             print("2) Personnel")
             print("3) POS")
-        else:  # sorry, just an employee
+        else:  # just an employee
             print("3) POS")
 
         # take the user menu choice
@@ -72,6 +77,7 @@ def mainMenu(managerFlag):
             menuChoice = int(input())
         except ValueError:
             print("Incorrect selection, try again!")
+            continue  # back to the top
 
 
     # call module menus
@@ -79,13 +85,13 @@ def mainMenu(managerFlag):
         InventoryModule.displayInventoryMenuHome()
     elif menuChoice == 2:
         if managerFlag:
-            # displayPersonnelMenu()
-            print()
+            EmployeesModule.displayPersonnelMenuHome()
+
         else:
             print("You do not have the appropriate permissions.")
     elif menuChoice == 3:
         print()
-        # displayPOSMenu()
+        POSModule.displayPOSMenu()  ###########################################
     else:
-        menuChoice == 0  # invalid menu choice, default to 0
+        mainMenu()  # invalid menu choice, back to top
 

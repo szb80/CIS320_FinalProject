@@ -1,49 +1,51 @@
 # CIS320 Final Project
 # Gustavo, Hugo & Seth
-# Hugh 5/7
+# Hugo 5/7
 
 import Employee, EmployeeSQL, Validate, mainMenu
 
 # GLOBAL CONSTANTS
-ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
+ERROR_PROMPT = "**ERROR: That is not a valid selection."
 SPACER_SIZE = 20
 
 
-# displays the home page of the Personnel module menu
-def displayPersonnelMenuHome():  # -------------------------------------------
-    validMenuChoice = False
+def displayPersonnelMenuHome():  # tested
+    # displays the home page of the Personnel module menu
+
+    exitMenu = False  # set loop sentinel
 
     # loop through invalid input for menu display
-    while not validMenuChoice:
+    while not exitMenu:
         # print the menu
-        print("INVENTORY MENU", "=" * SPACER_SIZE)
-        print("1) Employees")
-        print("2) Employees Schedule")
-        print("0) Return")
+        print("EMPLOYEE MENU", "=" * SPACER_SIZE)
+        print("(1) Employees")
+        print("(2) Employees Schedule")
+        print("(0) Return")
 
         # take user menu choice
         try:
             menuChoice = int(input())
         except ValueError:
             print(ERROR_PROMPT)
-            continue
+            continue  # reset loop, failure to enter correct selection
 
         # call sub modules
         if menuChoice == 1:  # Employees
-            validMenuChoice = True
+            exitMenu = True
             displayEmployeesMenu()
         elif menuChoice == 2:  # Employees Schedule
-            validMenuChoice = True
-            displayEmployeeSchedule()
+            exitMenu = True
+            displayEmployeeScheduleMenu()
         elif menuChoice == 0:  # return up one level
+            mainMenu.mainMenu()
             return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
 
-    mainMenu.mainMenu()  # return to main menu upon exit
+    displayPersonnelMenuHome()  # return to top
 
 
-def displayEmployeesMenu():  # ----------------------------------------------
+def displayEmployeesMenu():  # tested
     # displays Employees
     validMenuChoice = False  # sentinel for menu display loop
     menuChoice = -1  # initialize to -1 as sentinel
@@ -64,7 +66,8 @@ def displayEmployeesMenu():  # ----------------------------------------------
         try:
             menuChoice = int(menuChoice)  # attempt cast to int
         except ValueError as err:
-            print(ERROR_PROMPT, " at displayEmployees() ", err)
+            print(ERROR_PROMPT)
+            continue  # return to top of list
 
         # now check if int is within appropriate range
         if int(menuChoice) >= 0 or int(menuChoice) <= 3:
@@ -72,16 +75,14 @@ def displayEmployeesMenu():  # ----------------------------------------------
 
     # input passes all tests; run search and print result
     if int(menuChoice) == 1:
-        if listEmployees():
-            print("Here is the list of Employees:","-" * SPACER_SIZE)
-        else:  # default case
-            print("Could not find Employees!")
+        print("Here is the list of Employees:","-" * SPACER_SIZE)
+        listEmployees()
 
     elif int(menuChoice) == 2:
-        if addEmployees():
-            print("Successfully added new Employee")
+        if addEmployee():
+            print("Successfully added new Employee!")
         else:  # default case
-            print("Error adding new Employee")
+            print("**Error adding new Employee!")
 
     elif int(menuChoice) == 3:
         if deactivateEmployee():
@@ -92,20 +93,17 @@ def displayEmployeesMenu():  # ----------------------------------------------
     elif int(menuChoice) == 0:
         return True  # user wants to quit, exit function and return to caller
 
-    # error case, should not hit during normal execution
-    else:
-        displayEmployeesMenu()
-
-    # return to Personnel home menu
-    displayPersonnelMenuHome()
+    # return to top of menu after execution
+    displayEmployeesMenu()
 
 
-def displayEmployees():  # --------------------------------------------------
+
+def displayEmployees():  # tested
     # displays all the Employee records in the database
     return EmployeeSQL.displayTable()
 
 
-def addEmployee():  # --------------------------------------------------------
+def addEmployee():  # tested
     # adds a new employee
 
     # initialize all variables to default values:
@@ -135,7 +133,7 @@ def addEmployee():  # --------------------------------------------------------
     newEmpName = str(input("Enter Employee's First Name: "))
 
     # take last name to variable
-    newEmpLastName = str(input("Enter Employee's Las Name: "))
+    newEmpLastName = str(input("Enter Employee's Last Name: "))
 
     # take phone number and validate for number
     isValid = False  # set sentinel for input loop
@@ -143,7 +141,8 @@ def addEmployee():  # --------------------------------------------------------
     # loop until valid
     while not isValid:
         try:  # attempt to take int value
-            newEmpPhoneNumber = int(input("Please Enter Employees Phone Number (digits only): "))
+            newEmpPhoneNumber = int(input("Please Enter Employee's"
+                                          "Phone Number (digits only): "))
         except ValueError:
             print("**ERROR: Must be a number!")
         if newEmpPhoneNumber:
@@ -155,7 +154,8 @@ def addEmployee():  # --------------------------------------------------------
     # loop until input is valid
     while not isValid:
         try:  # attempt to take int value
-            managerInt = int(input("Enter '0' for employee for '1' for Manager: "))
+            managerInt = int(input("Enter '0' for Employee"
+                                   "or for '1' for Manager: "))
         except ValueError:
             print("**ERROR: Not a number!")
         if managerInt in range(0,2):
@@ -166,7 +166,7 @@ def addEmployee():  # --------------------------------------------------------
 
     # all variables are now populated and validated
 
-    # make an object
+    # make an instance
     newEmployee = Employee.Employee(newEmpNum
                                     , newEmpName
                                     , newEmpLastName
@@ -177,7 +177,11 @@ def addEmployee():  # --------------------------------------------------------
     return EmployeeSQL.createSQLRecord(newEmployee)
 
 
-def deactivateEmployee(): # ---------------------------------------------------
+def listEmployees():  # tested
+    return EmployeeSQL.displayTable()
+
+
+def deactivateEmployee(): # tested
     # deletes an existing inventory record
     isValid = False
     employeeID = 0  # initialize to 0
@@ -205,17 +209,17 @@ def deactivateEmployee(): # ---------------------------------------------------
     return EmployeeSQL.deleteSQLRecord(employeeID)
 
 
-def displayEmployeeScheduleMenu():  # ---------------------------------------
+def displayEmployeeScheduleMenu():  # tested
     # displays Schedule main menu
-    validMenuChoice = False  # set loop sentinel
+    exitFlag = False  # set loop sentinel
 
     # loop through invalid input for menu display
-    while not validMenuChoice:
+    while not exitFlag:
         # print the menu
         print("EMPLOYEE SCHEDULING", "=" * SPACER_SIZE)
-        print("1) Display Schedule")
-        print("2) Modify Schedule")
-        print("0) Return")
+        print("(1)  Display Schedule")
+        print("(2)  Modify Schedule")
+        print("(0)  Return")
 
         # take user menu choice
         try:
@@ -225,26 +229,25 @@ def displayEmployeeScheduleMenu():  # ---------------------------------------
             continue  # return to top of loop
 
         # call sub modules
-        if menuChoice == 1:  # Display schedule
-            validMenuChoice = True  # exit loop
+        if int(menuChoice) == 1:  # Display schedule
             displayEmployeeSchedule()  # and display schedule
-        elif menuChoice == 2:  # Modify Schedule
-            validMenuChoice = True  # exit loop
+        elif int(menuChoice) == 2:  # Modify Schedule
             modifyEmployeeSchedule()  # and modify schedule
-        elif menuChoice == 0:  # return up one level
+        elif int(menuChoice) == 0:  # return up one level
+            exitFlag = True
             return True  # exit function and return to calling menu
-        else:  # default case
+        else:  # default case, out of range
             print(ERROR_PROMPT)
 
-    displayPersonnelMenuHome()  # return to parent menu
+    displayEmployeeScheduleMenu()  # return to top of menu until exit
 
 
-def displayEmployeeSchedule():  # --------------------------------------------
+def displayEmployeeSchedule():  # tested
     # displays current employee schedule
     return EmployeeSQL.displayScheduleTable()
 
 
-def modifyEmployeeSchedule():  # ----------------------------------------------
+def modifyEmployeeSchedule():  # tested
     # modifies the employee schedule
     # initialize variables to def values:
     isValid = False  # input loop sentinel
@@ -266,9 +269,10 @@ def modifyEmployeeSchedule():  # ----------------------------------------------
     # input loop for day of week with validation
     while not isValid:
         try:
-            scheduleDay = int(input())
+            scheduleDay = int(input())  # cast input as int
         except ValueError:
             print("**ERROR: Enter a number!")
+            continue  # reset loop
         if scheduleDay in range(0, 8):
             isValid = True  # valid range, continue to next step
         else:
@@ -295,14 +299,13 @@ def modifyEmployeeSchedule():  # ----------------------------------------------
 
     if EmployeeSQL.updateSQLScheduleRecord(scheduleDay, employeeName):
         print("Schedule updated successfully!")
+        return True
     else:  # default case
         print("**ERROR: Schedule not updated.  Record error.")
-
-    # return to parent menu
-    displayEmployeeScheduleMenu()
+        return False
 
 
-def convertIntToDay(num):  # -------------------------------------------------
+def convertIntToDay(num):  # tested
     # converts a passed int to a matching string day
     if num == 1:
         return "Sunday"

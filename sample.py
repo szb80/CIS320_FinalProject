@@ -1,13 +1,15 @@
 # test file for debugging
 
-import Inventory, InventoryModule, InventorySQL, Validate, Employee, EmployeeSQL
+import Inventory, InventoryModule, InventorySQL, Validate
+import Employee, EmployeeSQL, EmployeesModule
+import POSModule, Sale, SaleSQL
 
 #empty = Inventory.Inventory()
 #burritos = Inventory.Inventory(40, "Burritos", "Asada burrito fully loaded", 14)
 
 #print(burritos)
 
-InventoryModule.addInventoryItem()
+#InventoryModule.addInventoryItem()
 
 #InventorySQL.createInventoryFromSQLRecord(37)
 
@@ -22,8 +24,6 @@ InventoryModule.addInventoryItem()
 #InventoryModule.displayModifyInventoryMenu()
 
 #InventoryModule.displayInventoryMenuHome()
-
-
 
 
 #seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=False)
@@ -45,3 +45,9 @@ InventoryModule.addInventoryItem()
 #EmployeeSQL.displayRecord(1)
 
 #EmployeeSQL.deleteSQLRecord(1)
+
+#EmployeesModule.displayPersonnelMenuHome()
+
+
+
+POSModule.displayMakeSaleMenu()

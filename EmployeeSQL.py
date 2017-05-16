@@ -262,7 +262,7 @@ def displayScheduleTable(): # -------------------------------------------------
 
         # print schedule to screen
         for row in result:
-            print('{0}\t\t{1}'.format(row[0], row[1]))
+            print('{0}\t{1}'.format(row[0], row[1]))
 
         # close the file
         conn.close()
