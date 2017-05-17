@@ -191,9 +191,7 @@ def modifySaleLineItemQty(saleNum):  # tested
 
     if SaleSQL.searchForSQLRecord(saleNum):
         # sale exists, proceed with function
-
         while not menuFlag:
-
             print("Enter the menu number to modify: ")
             # show the menu options
             for k, v in foodMenu.items():
@@ -234,60 +232,45 @@ def modifySaleLineItemQty(saleNum):  # tested
     return menuFlag  # return status of menu run
 
 
-
-# def modifySaleLineItemQty():
-#     # adjsuts sale item quantity
-#     isValid = False  # initialize menu sentinel
-#
-#     print("Adjusted item quantity", "-" * SPACER_SIZE)
-#
-#     # start menu loop
-#     while not isValid:
-#         lineItemQty = input("Enter the quantity of the item you want to order: ")
-#         # check if quantity is available and loop until valid
-#         if not Validate.validateInt(lineItemQty):
-#             print("**ERROR: select valid amount.")
-#             continue
-#
-#         # check if both criteria are met and exit loop
-#         if not SaleSQL.searchForSQLRecord(lineItemQty) \
-#                 and Validate.validateInt(lineItemQty):
-#             isValid = True
-#
-#     # begin taking input for item:
-#     lineItemNum = str("Enter the item you wish to purchase: ") # take name of item
-#
-#     lineItemQty = str("Enter the quantity: ") # take the amount of the item
-#
-#     # make a new sale record
-#     newSaleNumber = SaleSQL.createSQLRecord(newSaleNumber) ##### NOT SURE HOW TO COMPLETE THIS RECORD!!!
-#
-#     # attempt write and return status
-#     return SaleSQL.createSQLRecord(newSaleNumber)
-
-
-
-def deleteSaleNumber():
-    # deletes an existing order
-    isValid = False
+def refundSaleLineItem(saleNumber):
+    # refunds a sale line item for a specific menu choice
+    # initialize variables
+    menuItem, newQty = 0, 0
+    menuFlag, found = False, False
 
     # Validates.cls()
 
-    print("DELETING ORDER ", "-" * SPACER_SIZE)
+    print("REFUND LINE ITEM ", "-" * SPACER_SIZE)
 
-    # loop menu until valid input is entered
-    while not isValid:
-        saleNumber = input("Enter the sale number to delete: [0 to cancel] " )
-        # check if saleNumber is a number and loop until valid
-        if not Validate.validateInt(saleNum):O
-        print("**ERROR: must be a number.")
-        continue
-    if int(saleNum) == 0:
-        return False
-    # check if sale number is still in database and loop until valid
-    if SaleSQL.searchForSQLRecord(saleNum) \
-            and Validate.validateInt(saleNum):
-        isValid = True
+    if SaleSQL.searchForSQLRecord(saleNumber):
+        # if sale exists, proceed with function
+        while not menuFlag:
+            print("Enter the menu number to refund: ")
+            # show the menu options
+            for k, v in foodMenu.items():
+                print("\t"
+                      , k
+                      , "\t\t"
+                      , v[0]
+                      , sep="")
 
-    return SaleSQL.deleteSQLRecord(saleNum)
+            # take the user input and loop until valid
+            try:
+                menuItem = int(input())
+            except ValueError:
+                print(ERROR_PROMPT)
+                continue
 
+            # validate input is within menu range
+            # and a valid menu choice
+            if menuItem in range(0, len(foodMenu) + 1):
+                # see if this item was sold in this sale
+                for k,v in foodMenu.items():
+                    if menuItem == k:
+                        # item was present in sale, set quantity to 0
+                        if SaleSQL.updateSQLRecordQty(saleNumber
+                                , menuItem
+                                , 0):
+                            menuFlag = True  # successfully written to DB
+
+    return menuFlag  # return status of menu run
