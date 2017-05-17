@@ -50,4 +50,7 @@ import POSModule, Sale, SaleSQL
 
 
 
-POSModule.displayMakeSaleMenu()
+#POSModule.displayMakeSaleMenu()
+#POSModule.modifySaleLineItemQty(1495004964)
+POSModule.displayModifySaleMenu()
+

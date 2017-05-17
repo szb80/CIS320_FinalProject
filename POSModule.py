@@ -25,7 +25,7 @@ def displayPOSMenuHome(): # tested
         print("POS MENU", "=" * SPACER_SIZE)
         print("(1)  Make Sale")
         print("(2)  Modify Sale")
-        print("(0)  Return")
+        print("(0)  ..\ Up One Level")
 
         # take user menu choice
         try:
@@ -124,7 +124,7 @@ def displayMakeSaleMenu(): # tested
     displayPOSMenuHome()  # return to home menu, sale completed
 
 
-def displayModifySaleMenu(): # -----------------------------------------------
+def displayModifySaleMenu(): # tested
     # displays the modify sale submenu
     exitFlag = False
     saleNumber = 1
@@ -135,45 +135,55 @@ def displayModifySaleMenu(): # -----------------------------------------------
     # get a valid sale to modify
     while not SaleSQL.searchForSQLRecord(saleNumber):
         print("Enter the sale number to modify or (0) to exit: ")
-        try:
+        try:  # take input and loop until valid
             saleNumber = int(input())
         except ValueError:
             print("**ERROR: Enter a valid number!")
             continue
         if int(saleNumber) == 0:
             exitFlag = True
-            break  # abort early and skip rest of function
-        print("**ERROR: Sale does not exist!")  # error case
+            return False  # abort early and skip rest of function
+        elif not SaleSQL.searchForSQLRecord(saleNumber):
+            print("**ERROR: Sale not found!")
+            continue
 
     # DISPLAY MODIFY SUBMENU OPTIONS
     while not exitFlag:
-        # display primary menu options after successful
+        # display submenu options
         print("(1)  Adjust Quantity")
         print("(2)  Refund Item")
+        print("(0)  ..\ Up One Level")
 
         try:
             menuChoice = int(input())
         except ValueError:
             print("**ERROR: Must be a number!")
 
-        if int(menuChoice) == 1:
+        if int(menuChoice) == 1:  # option 1 - modify quantity
             if modifySaleLineItemQty(saleNumber):
                 print("Updated successfully!")
             else:
-                print("**ERROR: Failed to update!")
-        elif int(menuChoice) == 2:
+                print("**ERROR: Failed to update quantity!")
+            exitFlag = True  # exit loop
+
+        elif int(menuChoice) == 2:  # option 2 - refund sale
             if refundSaleLineItem(saleNumber):
-                print("Updated Successfully!")
+                print("Refunded Successfully!")
             else:
-                print("**ERROR: Failed to update!")
+                print("**ERROR: Failed to refund item!")
+            exitFlag = True  # exit loop
+
+        elif int(menuChoice) == 0:  # exit choice
+            exitFlag = True  # exit loop
+
         else:  # error case
             print(ERROR_PROMPT)
             continue  # back to top of modify submenu, out of range
 
-    return True
+    displayPOSMenuHome()  # return to home menu
 
 
-def modifySaleLineItemQty(saleNum):
+def modifySaleLineItemQty(saleNum):  # tested
     # adjusts the quantity of a sale item
     # initialize variables
     menuItem, newQty = 0, 0
@@ -189,28 +199,39 @@ def modifySaleLineItemQty(saleNum):
             for k, v in foodMenu.items():
                 print("\t"
                       , k
-                      , "\t\t$"
-                      , "{:.02f}".format(v[1])
                       , "\t\t"
                       , v[0]
                       , sep="")
 
-            # take the user input
+            # take the user input and loop until valid
             try:
                 menuItem = int(input())
             except ValueError:
                 print(ERROR_PROMPT)
+                continue
 
-            # validate within menu range
+            # validate input is within menu range
+            # and a valid menu choice
             if menuItem in range(0, len(foodMenu) + 1):
                 # see if this item was sold in this sale
                 for k,v in foodMenu.items():
-                    if
+                    if menuItem == k:
+                        # item was present in sale, input the modified quantity
+                        print("Enter the updated quantity: ")
+                        newQty = input()
 
+                        # loop until good input is found
+                        while not Validate.validateInt(newQty):
+                            print("**ERROR: Enter a valid number!")
+                            newQty = input()
 
+                        # we now have a valid sale, menu item, and new quantity
+                        # write it to the database now
 
-    else:
-        return False  # sale not found in database!  error case
+                        if SaleSQL.updateSQLRecordQty(saleNum, menuItem, newQty):
+                            menuFlag = True  # successfully written to DB
+
+    return menuFlag  # return status of menu run
 
 
 

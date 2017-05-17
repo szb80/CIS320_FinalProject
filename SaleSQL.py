@@ -70,7 +70,7 @@ def returnSaleQuantity(saleNum, menuID): # -------------------------------------
     except sqlite3 as err:
         print("**ERROR: at displaySale()", err)
 
-    return 0
+    return None
 
 
 def createSQLRecord(newSale): # ------------------------------------------
@@ -104,7 +104,7 @@ def createSQLRecord(newSale): # ------------------------------------------
     return success
 
 
-def updateSQLRecordQty(updateSale): # ---------------------------------------------
+def updateSQLRecordQty(saleNum, menuItem, newQty): # tested
     # updates an existing SQL record
     # returns boolean for record updated successfully
     # + creates connection to database
@@ -115,22 +115,40 @@ def updateSQLRecordQty(updateSale): # ------------------------------------------
     success = False  # initial return condition
 
     try:
-        # try to execute update matching record command on c
+        # connect to database
+        conn = sqlite3.connect('sales.db')
+        c = conn.cursor()
+
+        # attempt search on database for passed arguments
         c.execute(
-            "UPDATE sales_db SET lineItemQty=? WHERE saleNumber=? AND lineItemNum=?"
-            , (updateSale.getSaleLineItemQty()
-               , updateSale.getSaleLineItemNum()
-               , updateSale.getSaleNumber()
-               )
+            '''SELECT * FROM sales_db WHERE saleNumber=? AND lineItemNum=?'''
+            , (saleNum, menuItem,)
         )
-        success = True  # successful update record
+
+        # attempt save first result to variable
+        # there should only be one result
+        idExists = c.fetchone()
+
+        # if successful
+        if idExists:
+            # delete the current entry
+            conn.execute(
+                '''DELETE from sales_db where saleNumber=? AND lineItemNum=?'''
+                , (saleNum, menuItem,)
+            )
+            # recreate the new line item with the updated qty value
+            c.execute("INSERT INTO sales_db VALUES(?, ?, ?)"
+                      , (saleNum, menuItem, newQty,)
+                      )
+
+            success = True  # exit result
+
+        # commit changes to database
+        conn.commit()
+        conn.close()
 
     except sqlite3.IntegrityError as err:
-        print("ERROR: saleNumber doesn't exist in updateSQLRecord()", err)
-
-    # write and close DB
-    conn.commit()
-    conn.close()
+        print("**ERROR: at deleteSQLRecord()", err)
 
     return success
 
