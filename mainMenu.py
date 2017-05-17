@@ -43,9 +43,9 @@ def setManagerFlag(): #---------------------------------------------------
 
     getEmployeeNumber()
 
-    # searchSQLForEmpNumber
+    # searchSQLForEmpNumber  #############################################
 
-    # getEmployeeManagerFlag
+    # getEmployeeManagerFlag  #############################################
 
     return managerFlag
 
@@ -91,7 +91,7 @@ def mainMenu():
             print("You do not have the appropriate permissions.")
     elif menuChoice == 3:
         print()
-        POSModule.displayPOSMenu()  ###########################################
+        POSModule.displayPOSMenuHome()  ###########################################
     else:
         mainMenu()  # invalid menu choice, back to top
 
