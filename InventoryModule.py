@@ -17,7 +17,7 @@ def displayInventoryMenuHome(managerFlag):  # tested
 
     # loop through invalid input for menu display
     while not exitMenu:
-        Validate.cls()  # clear screen before run
+        #Validate.cls()  # clear screen before run
         # print the menu
         print("INVENTORY MENU", "=" * SPACER_SIZE)
         print("(1)  Check Inventory")
@@ -52,7 +52,7 @@ def displayCheckInventoryMenu():  # tested
     exitFlag, validMenuChoice = False, False
     menuSelection = 1  # initialize display all sentinel
 
-    Validate.cls()  # clear screen
+    #Validate.cls()  # clear screen
 
     while not exitFlag:
         while not validMenuChoice:
@@ -115,7 +115,7 @@ def displayModifyInventoryMenu():  # tested
     exitFlag = False  # sentinel for menu display loop
     menuChoice = -1  # initialize to -1 as sentinel
 
-    Validate.cls()  # clear screen
+    #Validate.cls()  # clear screen
 
     print("MODIFY INVENTORY ", "-" * SPACER_SIZE)
 
@@ -124,7 +124,7 @@ def displayModifyInventoryMenu():  # tested
         print("(1)  Add Inventory Item")
         print("(2)  Modify Inventory Item")
         print("(3)  Delete Inventory Item")
-        print("(0)  Return")
+        print("(0)  < Go Back")
 
         # take user input on newline
         menuChoice = input("")
@@ -192,7 +192,7 @@ def addInventoryItem():  # tested
 
     isValid = False  # initialize menu sentinel
 
-    Validate.cls()  # clear screen
+    #Validate.cls()  # clear screen
 
     print("ADDING NEW RECORD ", "-" * SPACER_SIZE)
 
@@ -237,7 +237,7 @@ def modifyInventoryItem():  # tested
 
     isValid = False
 
-    Validate.cls()  # clear screen
+    #Validate.cls()  # clear screen
 
     print("MODIFYING RECORD ", "-" * SPACER_SIZE)
 
@@ -268,7 +268,8 @@ def modifyInventoryItem():  # tested
 
     # take updated stock count value
     newStock = input("Enter the stock count: [0 for no change] ")
-    while not Validate.validateFloatOrEmpty(newStock): # validate is number
+    while not Validate.validateFloatOrEmpty(newStock) \
+            or Validate.validateFloatOrEmpty(newStock) >= 0: # validate is > 0
         newStock = input("**ERROR: must be as number. Enter the stock count: ")
 
     # all variables are now populated and validated
@@ -301,7 +302,7 @@ def deleteInventoryItem(): # tested
 
     isValid = False
 
-    Validate.cls()  # clear screen
+    #Validate.cls()  # clear screen
 
     print("DELETING RECORD ", "-" * SPACER_SIZE)
 

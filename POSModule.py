@@ -23,7 +23,7 @@ def displayPOSMenuHome(managerFlag): # tested
     exitFlag = False  # menu sentinel
 
     while not exitFlag:
-        Validate.cls()
+        #Validate.cls()
 
         #print POS menu
         print("POS MENU", "=" * SPACER_SIZE)
@@ -62,7 +62,7 @@ def displayMakeSaleMenu(): # tested
     selection, quantity = -1, 0  # initialize out of range
 
     # display sale menu
-    Validate.cls()
+    #Validate.cls()
     print("MAKE SALE", "-" * SPACER_SIZE)
     while not exitFlag:
         # show the menu options
@@ -113,7 +113,7 @@ def displayMakeSaleMenu(): # tested
                 print("**ERROR: Purchase item not saved to database!")
 
     if exitFlag:
-        Validate.cls()
+        #Validate.cls()
         # sale process completed, proceed with finalization
         totalPrice = 0
 
@@ -141,7 +141,7 @@ def displayModifySaleMenu(): # tested
     saleNumber = 1
     menuChoice = -1
 
-    Validate.cls()  # clear the screen
+    #Validate.cls()  # clear the screen
     print("MODIFY SALE", "-" * SPACER_SIZE)  # display header
 
     # get a valid sale to modify
@@ -161,7 +161,7 @@ def displayModifySaleMenu(): # tested
 
     # DISPLAY MODIFY SUBMENU OPTIONS
     while not exitFlag:
-        Validate.cls()
+        #Validate.cls()
         # display submenu options
         print("(1)  Adjust Quantity")
         print("(2)  Refund Item")
@@ -255,7 +255,7 @@ def refundSaleLineItem(saleNumber):
     menuItem, newQty = 0, 0
     menuFlag, found = False, False
 
-    Validate.cls()
+    #Validate.cls()
 
     print("REFUND LINE ITEM ", "-" * SPACER_SIZE)
 

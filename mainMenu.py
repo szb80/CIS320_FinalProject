@@ -71,18 +71,18 @@ def mainMenu(managerFlag):
 
         # call module menus
         if menuChoice == 1:
-            Validate.cls()
+            #Validate.cls()
             InventoryModule.displayInventoryMenuHome(managerFlag)
 
         elif menuChoice == 2:
             if managerFlag:
-                Validate.cls()
+                #Validate.cls()
                 EmployeesModule.displayPersonnelMenuHome(managerFlag)
             else:
                 print("You do not have the appropriate permissions.")
 
         elif menuChoice == 3:
-            Validate.cls()
+            #Validate.cls()
             POSModule.displayPOSMenuHome(managerFlag)
 
         elif menuChoice == 0:

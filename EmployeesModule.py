@@ -17,7 +17,7 @@ def displayPersonnelMenuHome(managerFlag):  # tested
 
     # loop through invalid input for menu display
     while not exitMenu:
-        Validate.cls()  # clear screen each run
+        #Validate.cls()  # clear screen each run
 
         # print the menu
         print("EMPLOYEE MENU", "=" * SPACER_SIZE)
@@ -51,7 +51,7 @@ def displayEmployeesMenu():  # tested
     validMenuChoice = False  # sentinel for menu display loop
     menuChoice = -1  # initialize to -1 as sentinel
 
-    Validate.cls()  # clear screen
+    ##Validate.cls()  # clear screen
 
     print("Employees ", "-" * SPACER_SIZE)
 
@@ -122,7 +122,7 @@ def addEmployee():  # tested
     managerInt = -1  # initialize out of range
     isValid = False  # input loop sentinel
 
-    Validate.cls()  # clear screen and display message
+    ##Validate.cls()  # clear screen and display message
     print("ADDING NEW EMPLOYEE ", "-" * SPACER_SIZE)
 
     while not isValid:
@@ -200,7 +200,7 @@ def deactivateEmployee(): # tested
     isValid = False
     employeeID = 0  # initialize to 0
 
-    Validate.cls()  # clear screen and display header
+    ##Validate.cls()  # clear screen and display header
     print("DELETING RECORD ", "-" * SPACER_SIZE)
 
     # loop menu until valid input is entered
@@ -233,7 +233,7 @@ def displayEmployeeScheduleMenu():  # tested
 
     # loop through invalid input for menu display
     while not exitFlag:
-        Validate.cls()  # clear screen
+        #Validate.cls()  # clear screen
 
         # print the menu
         print("EMPLOYEE SCHEDULING", "=" * SPACER_SIZE)
@@ -279,7 +279,7 @@ def modifyEmployeeSchedule():  # tested
     scheduleDay = 0
     employeeName = ""
 
-    Validate.cls()  # clear screen
+    #Validate.cls()  # clear screen
     print("MODIFY EMPLOYEE SCHEDULE ", "-" * SPACER_SIZE)
 
     print("Enter the day to modify: ")
