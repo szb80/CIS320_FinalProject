@@ -42,6 +42,7 @@ def validateFloatOrEmpty(num):
 
 
 def cls():
-    # def to clear the console screen
-    #print("\n" * 100)
+    # method to clear the console screen
+    import subprocess as sp
+    t = sp.call('clear', shell=True)
     return

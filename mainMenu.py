@@ -4,6 +4,7 @@
 
 # Imports
 import InventoryModule, EmployeesModule, POSModule
+import Validate
 
 # Initialize variables
 managerFlag = False  # default to false
@@ -84,17 +85,18 @@ def mainMenu(managerFlag):
 
     # call module menus
     if menuChoice == 1:
-        InventoryModule.displayInventoryMenuHome()
+        Validate.cls()
+        InventoryModule.displayInventoryMenuHome(managerFlag)
 
     elif menuChoice == 2:
         if managerFlag:
-            EmployeesModule.displayPersonnelMenuHome()
+            EmployeesModule.displayPersonnelMenuHome(managerFlag)
         else:
             print("You do not have the appropriate permissions.")
 
     elif menuChoice == 3:
-        POSModule.displayPOSMenuHome()
+        POSModule.displayPOSMenuHome(managerFlag)
 
     else:
-        mainMenu()  # invalid menu choice, back to top
+        mainMenu(managerFlag)  # invalid menu choice, back to top
 

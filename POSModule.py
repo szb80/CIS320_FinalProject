@@ -16,7 +16,7 @@ foodMenu  = { 1: ("Taco", 1)
               }
 
 
-def displayPOSMenuHome(): # tested
+def displayPOSMenuHome(managerFlag): # tested
     # displays Home Page of the Point Of Sale (POS) module
     exitFlag = False  # menu sentinel
 
@@ -44,7 +44,7 @@ def displayPOSMenuHome(): # tested
         else: # default case
             print(ERROR_PROMPT)
 
-    mainMenu.mainMenu()  # return to home menu
+    mainMenu.mainMenu(managerFlag)  # return to home menu
 
 
 def displayMakeSaleMenu(): # tested

@@ -9,7 +9,7 @@ ERROR_PROMPT = "**ERROR: That is not a valid selection."
 SPACER_SIZE = 20
 
 
-def displayPersonnelMenuHome():  # tested
+def displayPersonnelMenuHome(managerFlag):  # tested
     # displays the home page of the Personnel module menu
 
     exitMenu = False  # set loop sentinel
@@ -37,12 +37,10 @@ def displayPersonnelMenuHome():  # tested
             exitMenu = True
             displayEmployeeScheduleMenu()
         elif menuChoice == 0:  # return up one level
-            mainMenu.mainMenu()
+            mainMenu.mainMenu(managerFlag)
             return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
-
-    displayPersonnelMenuHome()  # return to top
 
 
 def displayEmployeesMenu():  # tested

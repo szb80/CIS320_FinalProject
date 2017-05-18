@@ -9,7 +9,7 @@ ERROR_PROMPT = "**ERROR: That is not a valid selection, try again."
 SPACER_SIZE = 20
 
 
-def displayInventoryMenuHome():  # tested
+def displayInventoryMenuHome(managerFlag):  # tested
     # displays the home page of the Inventory module menu
 
     validMenuChoice = False
@@ -37,12 +37,10 @@ def displayInventoryMenuHome():  # tested
             validMenuChoice = True
             displayModifyInventoryMenu()
         elif menuChoice == 0:  # return up one level
-            mainMenu.mainMenu()
+            mainMenu.mainMenu(managerFlag)
             return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
-
-    displayInventoryMenuHome()  # return to main menu upon exit
 
 
 def displayCheckInventoryMenu():  # tested

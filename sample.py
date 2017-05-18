@@ -3,6 +3,7 @@
 import Inventory, InventoryModule, InventorySQL, Validate
 import Employee, EmployeeSQL, EmployeesModule
 import POSModule, Sale, SaleSQL
+import mainMenu
 
 #empty = Inventory.Inventory()
 #burritos = Inventory.Inventory(40, "Burritos", "Asada burrito fully loaded", 14)
@@ -55,3 +56,4 @@ import POSModule, Sale, SaleSQL
 #POSModule.displayModifySaleMenu()
 #POSModule.refundSaleLineItem(1495004964)
 
+mainMenu.mainMenu(True)
