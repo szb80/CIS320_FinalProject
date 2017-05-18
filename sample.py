@@ -4,6 +4,7 @@ import Inventory, InventoryModule, InventorySQL, Validate
 import Employee, EmployeeSQL, EmployeesModule
 import POSModule, Sale, SaleSQL
 import mainMenu
+import mainProgram
 
 #empty = Inventory.Inventory()
 #burritos = Inventory.Inventory(40, "Burritos", "Asada burrito fully loaded", 14)
@@ -56,4 +57,6 @@ import mainMenu
 #POSModule.displayModifySaleMenu()
 #POSModule.refundSaleLineItem(1495004964)
 
-mainMenu.mainMenu(True)
+#mainMenu.mainMenu(True)
+
+#print("Manager flag is: ", mainMenu.getManagerFlag(mainMenu.getEmployeeNumber()))

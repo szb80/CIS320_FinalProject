@@ -144,22 +144,24 @@ def searchForSQLRecord(empNum): # tested
     # returns a boolean for record is found
     # + creates connection to database
 
-    # connect to database
-    conn = sqlite3.connect('employee.db')
-    c = conn.cursor()
+    try:
+        # connect to database
+        conn = sqlite3.connect('employee.db')
+        c = conn.cursor()
 
-    # select record
-    c.execute(
-      '''SELECT * FROM employee_db WHERE empNumber=?'''
-      , (empNum,)
-    )
-    idExists = c.fetchone()
+        # select record
+        c.execute(
+          '''SELECT * FROM employee_db WHERE empNumber=?'''
+          , (empNum,)
+        )
+        idExists = c.fetchone()
 
-    conn.close()  # close DB connection without commit
+        conn.close()  # close DB connection without commit
 
-    if idExists:  # record was found in DB
-        return True
-    else:
+        if idExists:  # record was found in DB
+            return True
+    except sqlite3.IntegrityError as err:
+        print("**ERROR: Connection to database failed.", err)
         return False
 
 
@@ -168,22 +170,53 @@ def searchForSQLRecordName(empName):  # -------------------------------------
     # returns a boolean for record is found
     # + creates connection to database
 
-    # connect to database
-    conn = sqlite3.connect('employee.db')
-    c = conn.cursor()
+    try:
+        # connect to database
+        conn = sqlite3.connect('employee.db')
+        c = conn.cursor()
 
-    # select record
-    c.execute(
-        '''SELECT * FROM employee_db WHERE empNameFirst=?'''
-        , (empName,)
-    )
-    idExists = c.fetchone()
+        # select record
+        c.execute(
+            '''SELECT * FROM employee_db WHERE empNameFirst=?'''
+            , (empName,)
+        )
+        idExists = c.fetchone()
 
-    conn.close()  # close DB connection without commit
+        conn.close()  # close DB connection without commit
 
-    if idExists:  # record was found in DB
-        return True
-    else:
+        if idExists:  # record was found in DB
+            return True
+    except sqlite3.IntegrityError as err:
+        print("**ERROR: Connection to database failed.", err)
+        return False
+
+
+def getEmployeeManagerFlag(empNum):  # tested
+    # searches the database for a matching record to the passed name
+    # returns a boolean for record is found
+    # + creates connection to database
+
+    try:
+        # connect to database
+        conn = sqlite3.connect('employee.db')
+        c = conn.cursor()
+
+        # select record
+        c.execute(
+            '''SELECT manager FROM employee_db WHERE empNumber=?'''
+            , (empNum,)
+        )
+        idExists = c.fetchone()
+
+        conn.close()  # close DB connection without commit
+
+        # record was found
+        if int(idExists[0]) == 1:  # 1 is True
+            return True
+        elif int(idExists[0] == 0):  # 0 is False
+            return False
+    except sqlite3.IntegrityError as err:
+        print("**ERROR: Database error:", err)
         return False
 
 
@@ -194,27 +227,29 @@ def createEmployeeFromSQLRecord(empNum): # tested
     # + creates connection to database
 
     if searchForSQLRecord(empNum):  # record exists
-        # connect to database
-        conn = sqlite3.connect('employee.db')
-        c = conn.cursor()
+        try:
+            # connect to database
+            conn = sqlite3.connect('employee.db')
+            c = conn.cursor()
 
-        # select row from
-        c.execute(
-            '''SELECT * FROM employee_db WHERE empNumber=?'''
-            , (empNum,))
-        idExists = c.fetchone()
+            # select row from
+            c.execute(
+                '''SELECT * FROM employee_db WHERE empNumber=?'''
+                , (empNum,))
+            idExists = c.fetchone()
 
-        # close connection without commit
-        conn.close()
+            # close connection without commit
+            conn.close()
 
-        # build Inventory instance to return with 4 columns
-        return Employee.Employee(idExists[0]
-                                   , idExists[1]
-                                   , idExists[2]
-                                   , idExists[3]
-                                   , idExists[4]
-                                   )
-
+            # build Inventory instance to return with 4 columns
+            return Employee.Employee(idExists[0]
+                                       , idExists[1]
+                                       , idExists[2]
+                                       , idExists[3]
+                                       , idExists[4]
+                                       )
+        except sqlite3.IntegrityError as err:
+            print("**ERROR: Database error.", err)
     else:
         return None
 
