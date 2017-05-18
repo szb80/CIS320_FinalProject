@@ -6,9 +6,6 @@
 import InventoryModule, EmployeesModule, POSModule
 import Validate
 
-# Initialize variables
-managerFlag = False  # default to false
-
 # Global static for total modules available in program
 # Adjust the MAX_MODULES variable when adding additional modules to program.
 MAX_MODULES = 3
@@ -52,18 +49,13 @@ def setManagerFlag(): #---------------------------------------------------
     return managerFlag
 
 
-def validateMenuChoice(num):
-# validates if the menu choice was within the appropriate range
-    return num in range(1, MAX_MODULES + 1)
-
-
 def mainMenu(managerFlag):
 # displays the main menu
-
+    exitProgram = False  # loop sentinel
     menuChoice = -1
 
     # main menu loop, display menu until valid selection is made
-    while not validateMenuChoice(menuChoice):
+    while not exitProgram:
         # print the menu
         print("MAIN MENU", "-" * 20)
         print("(1)  Inventory")
@@ -82,21 +74,24 @@ def mainMenu(managerFlag):
             print("Incorrect selection, try again!")
             continue  # back to the top of loop
 
+        # call module menus
+        if menuChoice == 1:
+            Validate.cls()
+            InventoryModule.displayInventoryMenuHome(managerFlag)
 
-    # call module menus
-    if menuChoice == 1:
-        Validate.cls()
-        InventoryModule.displayInventoryMenuHome(managerFlag)
+        elif menuChoice == 2:
+            if managerFlag:
+                EmployeesModule.displayPersonnelMenuHome(managerFlag)
+            else:
+                print("You do not have the appropriate permissions.")
 
-    elif menuChoice == 2:
-        if managerFlag:
-            EmployeesModule.displayPersonnelMenuHome(managerFlag)
+        elif menuChoice == 3:
+            POSModule.displayPOSMenuHome(managerFlag)
+
+        elif menuChoice == 0:
+            exitProgram = True
+            return True  # exit program
+
         else:
-            print("You do not have the appropriate permissions.")
-
-    elif menuChoice == 3:
-        POSModule.displayPOSMenuHome(managerFlag)
-
-    else:
-        mainMenu(managerFlag)  # invalid menu choice, back to top
+            print("**ERROR: Invalid selection!")
 

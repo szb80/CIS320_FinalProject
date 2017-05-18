@@ -24,7 +24,7 @@ import mainMenu
 
 #InventoryModule.displayModifyInventoryMenu()
 
-#InventoryModule.displayInventoryMenuHome()
+#InventoryModule.displayInventoryMenuHome(True)
 
 
 #seth = Employee.Employee(1, 'Seth', 'Bagdanov', '1234567890', in_manager=False)

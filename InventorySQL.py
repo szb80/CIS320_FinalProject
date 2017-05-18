@@ -64,9 +64,8 @@ def displayTable(): #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
     # catch any errors in the file
     except sqlite3 as err:
-        print("**ERROR: at deleteSQLRecord()", err)
-
-    return False
+        print("**ERROR: at displsayTable()", err)
+        return False
 
 
 def createSQLRecord(inventoryItem): # +++++++++++++++++++++++++++++++++++++++++

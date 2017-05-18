@@ -11,16 +11,18 @@ SPACER_SIZE = 20
 
 def displayInventoryMenuHome(managerFlag):  # tested
     # displays the home page of the Inventory module menu
+    # SB
 
-    validMenuChoice = False
+    exitMenu = False
 
     # loop through invalid input for menu display
-    while not validMenuChoice:
+    while not exitMenu:
+        Validate.cls()  # clear screen before run
         # print the menu
         print("INVENTORY MENU", "=" * SPACER_SIZE)
         print("(1)  Check Inventory")
         print("(2)  Modify Inventory")
-        print("(0)  Return")
+        print("(0)  < Go Back")
 
         # take user menu choice
         try:
@@ -31,75 +33,89 @@ def displayInventoryMenuHome(managerFlag):  # tested
 
         # call sub modules
         if menuChoice == 1:  # check inventory
-            validMenuChoice = True
             displayCheckInventoryMenu()
         elif menuChoice == 2:  # modify inventory
-            validMenuChoice = True
             displayModifyInventoryMenu()
         elif menuChoice == 0:  # return up one level
-            mainMenu.mainMenu(managerFlag)
+            exitMenu = True
             return True  # exit function and return to calling menu
         else:  # default case
             print(ERROR_PROMPT)
 
+    return False
+
 
 def displayCheckInventoryMenu():  # tested
     # displays the Check Inventory menu page
+    # SB
 
-    validMenuChoice = False
+    exitFlag, validMenuChoice = False, False
     menuSelection = 1  # initialize display all sentinel
 
-    #Validate.cls()  # clear screen
+    Validate.cls()  # clear screen
 
-    while not validMenuChoice:
-        # print the menu and take initial input
-        itemNumSearch = input("Enter the item number to view (A for all): ")
+    while not exitFlag:
+        while not validMenuChoice:
+            # print the menu and take initial input
+            itemNumSearch = input("Enter the item number to view (A for all): ")
 
-        # check if itemNumSearch is char for VIEW ALL
-        try:
-            if str.upper(itemNumSearch) == 'A':
-                menuSelection = 0  # sentinel for display all
-                validMenuChoice = True  # exit loop and display menu
+            # check if itemNumSearch is char for VIEW ALL
+            try:
+                if str.upper(itemNumSearch) == 'A':
+                    menuSelection = 0  # sentinel for display all
+                    validMenuChoice = True  # exit loop and display menu
+                    continue
+            except ValueError:
+                # catch error but continue
+                print()
+
+            # check if if itemNumSearch is an int, else throw error
+            try:
+                itemNumSearch = int(itemNumSearch)  # attempt cast to int
+            except ValueError as err:
+                print(ERROR_PROMPT)
                 continue
-        except ValueError:
-            # catch error but continue
-            print()
 
-        # check if if itemNumSearch is an int, else throw error
-        try:
-            itemNumSearch = int(itemNumSearch)  # attempt cast to int
-        except ValueError as err:
+            # menu choice is an int and not ALL, user must want to check item number
+            # now check if int is within appropriate range
+            inventorySizeParams = Inventory.Inventory()  # create instance to call
+            if int(inventorySizeParams.MIN_ITEM_NUMBER_SIZE) \
+                    <= itemNumSearch \
+                    <= int(inventorySizeParams.MAX_ITEM_NUMBER_SIZE):
+                validMenuChoice = True  # passes all tests and exits loop
+
+        # input passes all tests; run search and print result
+        if validMenuChoice:
+            if menuSelection == 0:  # sentinel set to display all
+                displayAllInventory()
+                exitFlag = True
+                return True
+            else:
+                # search for record
+                if searchInventory(itemNumSearch) is None:  # record does not exist
+                    print("Item not found in inventory.")  # notify and exit
+                    exitFlag = True
+                    return False
+                else:
+                    # record found, print it and exit
+                    InventorySQL.displayRecord(itemNumSearch)
+                    exitFlag = True
+                    return True
+        else:  # error case
             print(ERROR_PROMPT)
-            continue
+            exitFlag = True
 
-        # menu choice is an int and not ALL, user must want to check item number
-        # now check if int is within appropriate range
-        inventorySizeParams = Inventory.Inventory()  # create instance to call
-        if int(inventorySizeParams.MIN_ITEM_NUMBER_SIZE) \
-                <= itemNumSearch \
-                <= int(inventorySizeParams.MAX_ITEM_NUMBER_SIZE):
-            validMenuChoice = True  # passes all tests and exits loop
-
-    # input passes all tests; run search and print result
-    if menuSelection == 0:  # sentinel set to display all
-        displayAllInventory()
-    else:
-        # search for record
-        if searchInventory(itemNumSearch) is None:  # record does not exist
-            print("Item not found in inventory.")  # notify and exit
-        else:
-            # record found, print it and exit
-            InventorySQL.displayRecord(itemNumSearch)
-
-    displayInventoryMenuHome()  # return to Inventory home menu
+    return False  # return to Inventory home menu
 
 
 def displayModifyInventoryMenu():  # tested
     # displays the Modify Inventory menu
+    # SB
+
     exitFlag = False  # sentinel for menu display loop
     menuChoice = -1  # initialize to -1 as sentinel
 
-    #Validate.cls()  # clear screen
+    Validate.cls()  # clear screen
 
     print("MODIFY INVENTORY ", "-" * SPACER_SIZE)
 
@@ -123,39 +139,41 @@ def displayModifyInventoryMenu():  # tested
         if int(menuChoice) >= 0 or int(menuChoice) <= 3:
             exitFlag = True  # passes all tests and exits loop
 
-    # input passes all tests; run search and print result
-    if int(menuChoice) == 1:
-        if addInventoryItem():
-            print("Item added successfully!")
-        else:  # default case
-            print("Error adding item!  Did not complete.")
+        # input passes all tests; run search and print result
+        if int(menuChoice) == 1:
+            if addInventoryItem():
+                print("Item added successfully!")
+            else:  # default case
+                print("Error adding item!  Did not complete.")
 
-    elif int(menuChoice) == 2:
-        if modifyInventoryItem():
-            print("Item modified successfully!")
-        else:  # default case
-            print("Error modifying item!  Did not complete.")
+        elif int(menuChoice) == 2:
+            if modifyInventoryItem():
+                print("Item modified successfully!")
+            else:  # default case
+                print("Error modifying item!  Did not complete.")
 
-    elif int(menuChoice) == 3:
-        if deleteInventoryItem():
-            print("Record deleted successfully!")
-        else:  # default case
-            print("Nothing was deleted.")
+        elif int(menuChoice) == 3:
+            if deleteInventoryItem():
+                print("Record deleted successfully!")
+            else:  # default case
+                print("Nothing was deleted.")
 
-    elif int(menuChoice) == 0:
-        return True  # user wants to quit, exit function and return to caller
+        elif int(menuChoice) == 0:
+            return True  # user wants to quit, exit function and return to caller
 
-    # error case, should not hit during normal execution
-    else:
-        displayModifyInventoryMenu()
+        # error case, should not hit during normal execution
+        else:
+            displayModifyInventoryMenu()
 
     # return to Inventory home menu
-    displayInventoryMenuHome()
+    return True
 
 
 def searchInventory(itemNum):  # tested
     # searches database for record matching itemNum
     # returns Inventory instance matching itemNum or blank
+    # SB
+
     if InventorySQL.searchForSQLRecord(itemNum):
         return InventorySQL.createInventoryFromSQLRecord(itemNum)
 
@@ -164,12 +182,17 @@ def searchInventory(itemNum):  # tested
 
 def displayAllInventory():  # tested
     # displays all the inventory records in the database
+    # SB
     return InventorySQL.displayTable()
 
 
 def addInventoryItem():  # tested
     # adds a new inventory item
+    # SB
+
     isValid = False  # initialize menu sentinel
+
+    Validate.cls()  # clear screen
 
     print("ADDING NEW RECORD ", "-" * SPACER_SIZE)
 
@@ -210,7 +233,11 @@ def addInventoryItem():  # tested
 
 def modifyInventoryItem():  # tested
     # modifies an existing inventory item
+    # SB
+
     isValid = False
+
+    Validate.cls()  # clear screen
 
     print("MODIFYING RECORD ", "-" * SPACER_SIZE)
 
@@ -270,9 +297,11 @@ def modifyInventoryItem():  # tested
 
 def deleteInventoryItem(): # tested
     # deletes an existing inventory record
+    # SB
+
     isValid = False
 
-    #Validate.cls()
+    Validate.cls()  # clear screen
 
     print("DELETING RECORD ", "-" * SPACER_SIZE)
 

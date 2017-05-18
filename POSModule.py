@@ -18,14 +18,18 @@ foodMenu  = { 1: ("Taco", 1)
 
 def displayPOSMenuHome(managerFlag): # tested
     # displays Home Page of the Point Of Sale (POS) module
+    # GC
+
     exitFlag = False  # menu sentinel
 
     while not exitFlag:
+        Validate.cls()
+
         #print POS menu
         print("POS MENU", "=" * SPACER_SIZE)
         print("(1)  Make Sale")
         print("(2)  Modify Sale")
-        print("(0)  ..\ Up One Level")
+        print("(0)  < Go Back")
 
         # take user menu choice
         try:
@@ -44,11 +48,12 @@ def displayPOSMenuHome(managerFlag): # tested
         else: # default case
             print(ERROR_PROMPT)
 
-    mainMenu.mainMenu(managerFlag)  # return to home menu
+    return True  # exit and return to home menu
 
 
 def displayMakeSaleMenu(): # tested
     # creates a new sale to write to database
+    # GC, SB
 
     # set a timestamp that will become the sale number for use
     # throughout the rest of the transaction
@@ -57,6 +62,7 @@ def displayMakeSaleMenu(): # tested
     selection, quantity = -1, 0  # initialize out of range
 
     # display sale menu
+    Validate.cls()
     print("MAKE SALE", "-" * SPACER_SIZE)
     while not exitFlag:
         # show the menu options
@@ -106,7 +112,8 @@ def displayMakeSaleMenu(): # tested
             else:  # error case, should not occur
                 print("**ERROR: Purchase item not saved to database!")
 
-    if not exitFlag:
+    if exitFlag:
+        Validate.cls()
         # sale process completed, proceed with finalization
         totalPrice = 0
 
@@ -121,15 +128,20 @@ def displayMakeSaleMenu(): # tested
             , "{:.02f}".format(totalPrice)
             , sep="")
 
-    displayPOSMenuHome()  # return to home menu, sale completed
+        input("Press <ENTER> to confirm sale")
+
+    return True  # return to home menu, sale completed
 
 
 def displayModifySaleMenu(): # tested
     # displays the modify sale submenu
+    # GC, SB
+
     exitFlag = False
     saleNumber = 1
     menuChoice = -1
 
+    Validate.cls()  # clear the screen
     print("MODIFY SALE", "-" * SPACER_SIZE)  # display header
 
     # get a valid sale to modify
@@ -149,6 +161,7 @@ def displayModifySaleMenu(): # tested
 
     # DISPLAY MODIFY SUBMENU OPTIONS
     while not exitFlag:
+        Validate.cls()
         # display submenu options
         print("(1)  Adjust Quantity")
         print("(2)  Refund Item")
@@ -180,11 +193,13 @@ def displayModifySaleMenu(): # tested
             print(ERROR_PROMPT)
             continue  # back to top of modify submenu, out of range
 
-    displayPOSMenuHome()  # return to home menu
+    return True
 
 
 def modifySaleLineItemQty(saleNum):  # tested
     # adjusts the quantity of a sale item
+    # SB
+
     # initialize variables
     menuItem, newQty = 0, 0
     menuFlag, found = False, False
@@ -234,11 +249,13 @@ def modifySaleLineItemQty(saleNum):  # tested
 
 def refundSaleLineItem(saleNumber):
     # refunds a sale line item for a specific menu choice
+    # SB
+
     # initialize variables
     menuItem, newQty = 0, 0
     menuFlag, found = False, False
 
-    # Validates.cls()
+    Validate.cls()
 
     print("REFUND LINE ITEM ", "-" * SPACER_SIZE)
 
