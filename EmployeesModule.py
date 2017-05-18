@@ -60,7 +60,7 @@ def displayEmployeesMenu():  # tested
         print("(1)  List Employees")
         print("(2)  Add Employee")
         print("(3)  Deactivate Employee")
-        print("(0)  Return")
+        print("(0)  < Go Back")
 
         # take user input on newline
         menuChoice = input("")
@@ -239,7 +239,7 @@ def displayEmployeeScheduleMenu():  # tested
         print("EMPLOYEE SCHEDULING", "=" * SPACER_SIZE)
         print("(1)  Display Schedule")
         print("(2)  Modify Schedule")
-        print("(0)  Return")
+        print("(0)  < Go Back")
 
         # take user menu choice
         try:
