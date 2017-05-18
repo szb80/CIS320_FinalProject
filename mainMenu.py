@@ -27,6 +27,7 @@ def getEmployeeNumber():  # --------------------------------------------------
 
         # check that within range of acceptable employee numbers
         if 1 <= userLogin < 100:  # is within range
+            # searchSQLForEmpNumber  #############################################
             print("Thank you!")
             returnCondition = True
             return userLogin
@@ -41,7 +42,7 @@ def setManagerFlag(): #---------------------------------------------------
 # checks for manager flag in matching employee record
     managerFlag = False  # initialize to default
 
-    getEmployeeNumber()
+    empNum = getEmployeeNumber()
 
     # searchSQLForEmpNumber  #############################################
 
@@ -55,7 +56,7 @@ def validateMenuChoice(num):
     return num in range(1, MAX_MODULES + 1)
 
 
-def mainMenu():
+def mainMenu(managerFlag):
 # displays the main menu
 
     menuChoice = -1
@@ -64,12 +65,13 @@ def mainMenu():
     while not validateMenuChoice(menuChoice):
         # print the menu
         print("MAIN MENU", "-" * 20)
-        print("1) Inventory")
+        print("(1)  Inventory")
         if managerFlag:  # only for the bosses!
-            print("2) Personnel")
-            print("3) POS")
+            print("(2)  Personnel")
+            print("(3)  POS")
         else:  # just an employee
-            print("3) POS")
+            print("(3)  POS")
+        print("(0)  Quit")
 
         # take the user menu choice
         # validate the input as an int and catch exceptions
@@ -77,21 +79,22 @@ def mainMenu():
             menuChoice = int(input())
         except ValueError:
             print("Incorrect selection, try again!")
-            continue  # back to the top
+            continue  # back to the top of loop
 
 
     # call module menus
     if menuChoice == 1:
         InventoryModule.displayInventoryMenuHome()
+
     elif menuChoice == 2:
         if managerFlag:
             EmployeesModule.displayPersonnelMenuHome()
-
         else:
             print("You do not have the appropriate permissions.")
+
     elif menuChoice == 3:
-        print()
-        POSModule.displayPOSMenuHome()  ###########################################
+        POSModule.displayPOSMenuHome()
+
     else:
         mainMenu()  # invalid menu choice, back to top
 
